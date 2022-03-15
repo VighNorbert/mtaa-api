@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Doctors
  *
- * @ORM\Table(name="doctors", indexes={@ORM\Index(name="IDX_B67687BE5627D44C", columns={"specialisation_id"})})
+ * @ORM\Table(name="doctors", indexes={@ORM\Index(name="IDX_B67687BE5627D44C", columns={"specialisation_id"}), @ORM\Index(name="IDX_B67687BEA76ED395", columns={"user_id"})})
  * @ORM\Entity
  */
 class Doctors
@@ -25,44 +25,9 @@ class Doctors
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=64, nullable=false)
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="surname", type="string", length=64, nullable=false)
-     */
-    private $surname;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string", length=8, nullable=false)
      */
     private $title;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=256, nullable=false)
-     */
-    private $email;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phone", type="string", length=16, nullable=false)
-     */
-    private $phone;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password_hash", type="string", length=64, nullable=false)
-     */
-    private $passwordHash;
 
     /**
      * @var bool
@@ -137,33 +102,19 @@ class Doctors
      */
     private $specialisation;
 
+    /**
+     * @var \Users
+     *
+     * @ORM\ManyToOne(targetEntity="Users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
     public function getId(): ?string
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getSurname(): ?string
-    {
-        return $this->surname;
-    }
-
-    public function setSurname(string $surname): self
-    {
-        $this->surname = $surname;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -174,42 +125,6 @@ class Doctors
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone): self
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function getPasswordHash(): ?string
-    {
-        return $this->passwordHash;
-    }
-
-    public function setPasswordHash(string $passwordHash): self
-    {
-        $this->passwordHash = $passwordHash;
 
         return $this;
     }
@@ -330,6 +245,18 @@ class Doctors
     public function setSpecialisation(?Specialisations $specialisation): self
     {
         $this->specialisation = $specialisation;
+
+        return $this;
+    }
+
+    public function getUser(): ?Users
+    {
+        return $this->user;
+    }
+
+    public function setUser(?Users $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

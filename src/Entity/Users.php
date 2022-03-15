@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Users
  *
- * @ORM\Table(name="users")
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="users_email_uindex", columns={"email"})}, indexes={@ORM\Index(name="IDX_1483A5E987F4FB17", columns={"doctor_id"})})
  * @ORM\Entity
  */
 class Users
@@ -77,6 +77,16 @@ class Users
      * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
      */
     private $deletedAt;
+
+    /**
+     * @var \Doctors
+     *
+     * @ORM\ManyToOne(targetEntity="Doctors")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doctor_id", referencedColumnName="id")
+     * })
+     */
+    private $doctor;
 
     public function getId(): ?string
     {
@@ -175,6 +185,18 @@ class Users
     public function setDeletedAt(?\DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getDoctor(): ?Doctors
+    {
+        return $this->doctor;
+    }
+
+    public function setDoctor(?Doctors $doctor): self
+    {
+        $this->doctor = $doctor;
 
         return $this;
     }

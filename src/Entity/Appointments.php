@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Appointments
  *
- * @ORM\Table(name="appointments", indexes={@ORM\Index(name="IDX_6A41727AA76ED395", columns={"user_id"}), @ORM\Index(name="IDX_6A41727A87F4FB17", columns={"doctor_id"})})
+ * @ORM\Table(name="appointments", indexes={@ORM\Index(name="IDX_6A41727A6B899279", columns={"patient_id"}), @ORM\Index(name="IDX_6A41727A87F4FB17", columns={"doctor_id"})})
  * @ORM\Entity
  */
 class Appointments
@@ -83,10 +83,10 @@ class Appointments
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="patient_id", referencedColumnName="id")
      * })
      */
-    private $user;
+    private $patient;
 
     /**
      * @var \Doctors
@@ -199,14 +199,14 @@ class Appointments
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getPatient(): ?Users
     {
-        return $this->user;
+        return $this->patient;
     }
 
-    public function setUser(?Users $user): self
+    public function setPatient(?Users $patient): self
     {
-        $this->user = $user;
+        $this->patient = $patient;
 
         return $this;
     }

@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Users
@@ -10,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="users_email_uindex", columns={"email"})}, indexes={@ORM\Index(name="IDX_1483A5E987F4FB17", columns={"doctor_id"})})
  * @ORM\Entity
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['doctors.read']]
+)]
 class Users
 {
     /**
@@ -27,6 +32,7 @@ class Users
      *
      * @ORM\Column(name="name", type="string", length=64, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $name;
 
     /**
@@ -34,6 +40,7 @@ class Users
      *
      * @ORM\Column(name="surname", type="string", length=64, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $surname;
 
     /**
@@ -41,6 +48,7 @@ class Users
      *
      * @ORM\Column(name="email", type="string", length=256, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $email;
 
     /**
@@ -48,6 +56,7 @@ class Users
      *
      * @ORM\Column(name="phone", type="string", length=16, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $phone;
 
     /**

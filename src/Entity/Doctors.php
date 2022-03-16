@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Doctors
@@ -10,6 +14,13 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="doctors", indexes={@ORM\Index(name="IDX_B67687BE5627D44C", columns={"specialisation_id"}), @ORM\Index(name="IDX_B67687BEA76ED395", columns={"user_id"})})
  * @ORM\Entity
  */
+#[ApiResource(
+    attributes: ["pagination_items_per_page" => 10],
+    normalizationContext: ['groups' => ['doctors.read']]
+)]
+#[ApiFilter(
+    SearchFilter::class, properties: ['name' => 'partial', 'specialisation' => 'exact', 'city' => 'partial']
+)]
 class Doctors
 {
     /**
@@ -20,6 +31,7 @@ class Doctors
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="doctors_id_seq", allocationSize=1, initialValue=1)
      */
+    #[Groups(['doctors.read'])]
     private $id;
 
     /**
@@ -27,6 +39,7 @@ class Doctors
      *
      * @ORM\Column(name="title", type="string", length=8, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $title;
 
     /**
@@ -41,6 +54,7 @@ class Doctors
      *
      * @ORM\Column(name="appointments_length", type="integer", nullable=false, options={"default"="30"})
      */
+    #[Groups(['doctors.read'])]
     private $appointmentsLength = 30;
 
     /**
@@ -55,6 +69,7 @@ class Doctors
      *
      * @ORM\Column(name="address", type="string", length=128, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $address;
 
     /**
@@ -62,6 +77,7 @@ class Doctors
      *
      * @ORM\Column(name="city", type="string", length=128, nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $city;
 
     /**
@@ -69,6 +85,7 @@ class Doctors
      *
      * @ORM\Column(name="description", type="text", nullable=false)
      */
+    #[Groups(['doctors.read'])]
     private $description;
 
     /**
@@ -100,6 +117,7 @@ class Doctors
      *   @ORM\JoinColumn(name="specialisation_id", referencedColumnName="id")
      * })
      */
+    #[Groups(['doctors.read'])]
     private $specialisation;
 
     /**
@@ -110,6 +128,7 @@ class Doctors
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
+    #[Groups(['doctors.read'])]
     private $user;
 
     public function getId(): ?string

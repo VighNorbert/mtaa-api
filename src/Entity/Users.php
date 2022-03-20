@@ -6,7 +6,6 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Users
@@ -31,7 +30,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @ORM\Column(name="name", type="string", length=64, nullable=false)
      */
-    #[Groups(['doctors.read'])]
     private string $name;
 
     /**
@@ -39,7 +37,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @ORM\Column(name="surname", type="string", length=64, nullable=false)
      */
-    #[Groups(['doctors.read'])]
     private string $surname;
 
     /**
@@ -47,7 +44,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @ORM\Column(name="email", type="string", length=256, nullable=false)
      */
-    #[Groups(['doctors.read'])]
     private string $email;
 
     /**
@@ -55,7 +51,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @ORM\Column(name="phone", type="string", length=16, nullable=false)
      */
-    #[Groups(['doctors.read'])]
     private string $phone;
 
     /**

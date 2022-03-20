@@ -122,12 +122,6 @@ resources:
                           example: >-
                             Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
                             endodontické vyšetrenia.
-                        is_favourite:
+                        is_favorite:
                           type: boolean
                           default: false
-#    attributes:
-#      pagination_items_per_page:
-#        10
-#    normalizationContext:
-#      groups:
-#        - doctors.read

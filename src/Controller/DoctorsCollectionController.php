@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\DoctorRepository;
 use App\Repository\SpecialisationRepository;
 use App\Repository\UserRepository;
-use App\Response\DoctorFavourite;
+use App\Response\DoctorFavorite;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +35,7 @@ class DoctorsCollectionController extends AbstractController
             'name' => $request->query->get('name', ''),
             'specialisation' => $request->query->get('specialisation', ''),
             'city' => $request->query->get('city', ''),
-            'only_favorites' => boolval($request->query->get('only_favorites', false)),
+            'only_favorites' => filter_var(($request->query->get('only_favorites', false)), FILTER_VALIDATE_BOOLEAN),
             'page' => $request->query->get('page', 1),
             'per_page' => $request->query->get('per_page', 10),
         ];
@@ -43,7 +43,7 @@ class DoctorsCollectionController extends AbstractController
         $result = [];
         foreach ($doctorsCollection as $doc){
             $doctor = $this->doctorRepository->find($doc['id']);
-            $result[] = new DoctorFavourite($doctor, $doc['is_favourite']);
+            $result[] = new DoctorFavorite($doctor, $doc['is_favorite']);
         }
         return new JsonResponse($result);
     }

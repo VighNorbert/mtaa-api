@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Doctors
  *
  * @ORM\Table(name="doctors", indexes={@ORM\Index(name="IDX_B67687BE5627D44C", columns={"specialisation_id"}), @ORM\Index(name="IDX_B67687BEA76ED395", columns={"user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\DoctorRepository")
  */
 #[ApiFilter(
     SearchFilter::class, properties: ['name' => 'partial', 'specialisation' => 'exact', 'city' => 'partial']

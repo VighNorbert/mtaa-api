@@ -1,8 +1,133 @@
 resources:
   App\Entity\Doctors:
-    attributes:
-      pagination_items_per_page:
-        10
-    normalizationContext:
-      groups:
-        - doctors.read
+    itemOperations:
+      - get
+    collectionOperations:
+      get:
+        path: /doctors
+        controller: App\Controller\DoctorsCollectionController
+        openapi_context:
+          summary: Zoznam lekárov
+          description: |
+            Zoznam všetkých lekárov s možnosťou filtrovania pomocou parametrov,
+            napríklad full-textové vyhľadávanie nad menom lekára, filtrovanie podľa
+            špecializácie, alebo v prípade prihláseného používateľa s možnosťou
+            vyfiltrovania svojich obľúbených lekárov.
+          parameters:
+            - in: query
+              name: name
+              description: Vyhľadávanie podľa mena lekára
+              schema:
+                type: string
+              required: false
+            - in: query
+              name: specialisation
+              description: Vyhľadávanie podľa ID špecializácie
+              schema:
+                type: integer
+              required: false
+            - in: query
+              name: city
+              description: Vyhľadávanie podľa mesta
+              schema:
+                type: string
+              required: false
+            - in: query
+              name: only_favorites
+              description: Zobraziť iba obľúbených lekárov
+              schema:
+                type: boolean
+              required: false
+            - in: query
+              name: page
+              description: Číslo strany
+              schema:
+                type: integer
+                default: 1
+              required: false
+            - in: query
+              name: per_page
+              description: Počet výsledkov na jednu stranu
+              schema:
+                type: integer
+                default: 10
+              required: false
+          responses:
+            '200':
+              description: Výsledky vyhľadávania
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - surname
+                        - email
+                        - specialisation
+                        - appointments_length
+                        - address
+                        - city
+                        - description
+                      properties:
+                        id:
+                          type: integer
+                          example: 13
+                        name:
+                          type: string
+                          example: Peter
+                          maxLength: 64
+                        surname:
+                          type: string
+                          example: Slovák
+                          maxLength: 64
+                        title:
+                          type: string
+                          example: MUDr.
+                          maxLength: 8
+                        email:
+                          type: string
+                          format: email
+                          example: peter.slovak@gmail.com
+                          maxLength: 256
+                        phone:
+                          type: string
+                          example: +421 901 234 567
+                          minLength: 10
+                          maxLength: 16
+                        specialisation:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 13
+                            title:
+                              type: string
+                              example: Ortopéd
+                        appointments_length:
+                          type: integer
+                          example: 30
+                          description: Dĺžka jedného vyšetrenia v minútach
+                        address:
+                          type: string
+                          example: Hlboká 32
+                          maxLength: 128
+                        city:
+                          type: string
+                          example: Bratislava II
+                          maxLength: 128
+                        description:
+                          type: string
+                          example: >-
+                            Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                            endodontické vyšetrenia.
+                        is_favourite:
+                          type: boolean
+                          default: false
+#    attributes:
+#      pagination_items_per_page:
+#        10
+#    normalizationContext:
+#      groups:
+#        - doctors.read

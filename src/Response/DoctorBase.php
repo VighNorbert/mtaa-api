@@ -25,6 +25,7 @@ class DoctorBase extends User
     {
         parent::__construct($doctors->getUser());
 
+        $this->id = $doctors->getId();
         $this->title = $doctors->getTitle();
         $this->specialisation = new Specialisation($doctors->getSpecialisation());
         $this->appointments_length = $doctors->getAppointmentsLength();

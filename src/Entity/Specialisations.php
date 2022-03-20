@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Specialisations
  *
  * @ORM\Table(name="specialisations")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\SpecialisationRepository")
  */
 #[ApiResource(
     collectionOperations: ['get'],

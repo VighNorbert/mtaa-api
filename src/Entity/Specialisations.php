@@ -13,6 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity
  */
 #[ApiResource(
+    collectionOperations: ['get'],
+    itemOperations: ['get'],
     normalizationContext: ['groups' => ['doctors.read']]
 )]
 class Specialisations
@@ -20,13 +22,13 @@ class Specialisations
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="specialisations_id_seq", allocationSize=1, initialValue=1)
      */
     #[Groups(['doctors.read'])]
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -34,9 +36,9 @@ class Specialisations
      * @ORM\Column(name="title", type="string", length=64, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $title;
+    private string $title;
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -2,30 +2,29 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Users
  *
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="users_email_uindex", columns={"email"})}, indexes={@ORM\Index(name="IDX_1483A5E987F4FB17", columns={"doctor_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-#[ApiResource(
-    normalizationContext: ['groups' => ['doctors.read']]
-)]
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="users_id_seq", allocationSize=1, initialValue=1)
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -33,7 +32,7 @@ class Users
      * @ORM\Column(name="name", type="string", length=64, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $name;
+    private string $name;
 
     /**
      * @var string
@@ -41,7 +40,7 @@ class Users
      * @ORM\Column(name="surname", type="string", length=64, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $surname;
+    private string $surname;
 
     /**
      * @var string
@@ -49,7 +48,7 @@ class Users
      * @ORM\Column(name="email", type="string", length=256, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $email;
+    private string $email;
 
     /**
      * @var string
@@ -57,47 +56,53 @@ class Users
      * @ORM\Column(name="phone", type="string", length=16, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $phone;
+    private string $phone;
 
     /**
      * @var string
      *
      * @ORM\Column(name="password_hash", type="string", length=64, nullable=false)
      */
-    private $passwordHash;
+    private string $passwordHash;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $createdAt = 'CURRENT_TIMESTAMP';
+    private DateTime $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    private DateTime $updatedAt;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
      */
-    private $deletedAt;
+    private ?DateTime $deletedAt;
 
     /**
-     * @var \Doctors
+     * @var Doctors
      *
-     * @ORM\ManyToOne(targetEntity="Doctors")
+     * @ORM\ManyToOne(targetEntity="Doctors", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="doctor_id", referencedColumnName="id")
      * })
      */
-    private $doctor;
+    private Doctors $doctor;
 
-    public function getId(): ?string
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -162,36 +167,36 @@ class Users
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeInterface
+    public function getDeletedAt(): ?DateTime
     {
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    public function setDeletedAt(?DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 
@@ -210,5 +215,23 @@ class Users
         return $this;
     }
 
+    public function getRoles(): array
+    {
+        if ($this->getDoctor() instanceof Doctors) {
+            return ['ROLE_DOCTOR', 'ROLE_PATIENT'];
+        }
+        return ['ROLE_PATIENT'];
+    }
 
+    public function eraseCredentials() { }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getEmail();
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->getPasswordHash();
+    }
 }

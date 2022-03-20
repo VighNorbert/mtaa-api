@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,90 +16,96 @@ class Appointments
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="appointments_id_seq", allocationSize=1, initialValue=1)
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=1, nullable=false, options={"default"="F","fixed"=true})
      */
-    private $type = 'F';
+    private string $type = 'F';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="date", type="date", nullable=false)
      */
-    private $date;
+    private DateTime $date;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="time_from", type="datetime", nullable=false)
      */
-    private $timeFrom;
+    private DateTime $timeFrom;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="time_to", type="datetime", nullable=false)
      */
-    private $timeTo;
+    private DateTime $timeTo;
 
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=64, nullable=false)
      */
-    private $description;
+    private string $description;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $createdAt = 'CURRENT_TIMESTAMP';
+    private DateTime $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    private DateTime $updatedAt;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
      */
-    private $deletedAt;
+    private ?DateTime $deletedAt;
 
     /**
-     * @var \Users
+     * @var Users|null
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="patient_id", referencedColumnName="id")
      * })
      */
-    private $patient;
+    private ?Users $patient;
 
     /**
-     * @var \Doctors
+     * @var Doctors
      *
      * @ORM\ManyToOne(targetEntity="Doctors")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="doctor_id", referencedColumnName="id")
      * })
      */
-    private $doctor;
+    private Doctors $doctor;
 
-    public function getId(): ?string
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -115,36 +122,36 @@ class Appointments
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getTimeFrom(): ?\DateTimeInterface
+    public function getTimeFrom(): ?DateTime
     {
         return $this->timeFrom;
     }
 
-    public function setTimeFrom(\DateTimeInterface $timeFrom): self
+    public function setTimeFrom(DateTime $timeFrom): self
     {
         $this->timeFrom = $timeFrom;
 
         return $this;
     }
 
-    public function getTimeTo(): ?\DateTimeInterface
+    public function getTimeTo(): ?DateTime
     {
         return $this->timeTo;
     }
 
-    public function setTimeTo(\DateTimeInterface $timeTo): self
+    public function setTimeTo(DateTime $timeTo): self
     {
         $this->timeTo = $timeTo;
 
@@ -163,36 +170,36 @@ class Appointments
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeInterface
+    public function getDeletedAt(): ?DateTime
     {
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    public function setDeletedAt(?DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 

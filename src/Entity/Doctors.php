@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -26,13 +27,13 @@ class Doctors
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="doctors_id_seq", allocationSize=1, initialValue=1)
      */
     #[Groups(['doctors.read'])]
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -40,14 +41,14 @@ class Doctors
      * @ORM\Column(name="title", type="string", length=8, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $title;
+    private string $title;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="active", type="boolean", nullable=false, options={"default"="1"})
      */
-    private $active = true;
+    private bool $active = true;
 
     /**
      * @var int
@@ -55,14 +56,14 @@ class Doctors
      * @ORM\Column(name="appointments_length", type="integer", nullable=false, options={"default"="30"})
      */
     #[Groups(['doctors.read'])]
-    private $appointmentsLength = 30;
+    private int $appointmentsLength = 30;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="avatar_filename", type="string", length=64, nullable=true)
      */
-    private $avatarFilename;
+    private ?string $avatarFilename;
 
     /**
      * @var string
@@ -70,7 +71,7 @@ class Doctors
      * @ORM\Column(name="address", type="string", length=128, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $address;
+    private string $address;
 
     /**
      * @var string
@@ -78,7 +79,7 @@ class Doctors
      * @ORM\Column(name="city", type="string", length=128, nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $city;
+    private string $city;
 
     /**
      * @var string
@@ -86,31 +87,31 @@ class Doctors
      * @ORM\Column(name="description", type="text", nullable=false)
      */
     #[Groups(['doctors.read'])]
-    private $description;
+    private string $description;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $createdAt = 'CURRENT_TIMESTAMP';
+    private DateTime $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    private DateTime $updatedAt;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
      */
-    private $deletedAt;
+    private ?DateTime $deletedAt;
 
     /**
-     * @var \Specialisations
+     * @var Specialisations
      *
      * @ORM\ManyToOne(targetEntity="Specialisations")
      * @ORM\JoinColumns({
@@ -118,10 +119,10 @@ class Doctors
      * })
      */
     #[Groups(['doctors.read'])]
-    private $specialisation;
+    private Specialisations $specialisation;
 
     /**
-     * @var \Users
+     * @var Users
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
@@ -129,9 +130,15 @@ class Doctors
      * })
      */
     #[Groups(['doctors.read'])]
-    private $user;
+    private Users $user;
 
-    public function getId(): ?string
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -220,36 +227,36 @@ class Doctors
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeInterface
+    public function getDeletedAt(): ?DateTime
     {
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    public function setDeletedAt(?DateTime $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
 

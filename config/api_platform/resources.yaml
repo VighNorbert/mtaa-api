@@ -1,0 +1,137 @@
+resources:
+  App\Entity\Users:
+    itemOperations:
+      - get
+    collectionOperations:
+      login:
+        method: post
+        path: /login
+        controller: App\Controller\LoginController
+        openapi_context:
+          summary: Prihlásenie pacienta alebo lekára
+          description: |
+            Používateľ - pacient, alebo lekár, sa môže pomocou tohto endpointu
+            prihlásiť. V odpovedi dostane používateľ access-token, vďaka ktorému sa
+            môže autentifikovať pri ďalších API volaniach.
+          requestBody:
+            description: Používateľ ktorý sa chce prihlásiť
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - email
+                    - password
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+          responses:
+            '200':
+              description: Používateľ bol prihlásený
+              content:
+                application/json:
+                  schema:
+                    oneOf:
+                      - type: object
+                        properties:
+                          patient:
+                            type: object
+                            required:
+                              - name
+                              - surname
+                              - email
+                            properties:
+                              id:
+                                type: integer
+                                example: 13
+                              name:
+                                type: string
+                                example: Peter
+                                maxLength: 64
+                              surname:
+                                type: string
+                                example: Slovák
+                                maxLength: 64
+                              email:
+                                type: string
+                                format: email
+                                example: peter.slovak@gmail.com
+                                maxLength: 256
+                              phone:
+                                type: string
+                                example: +421 901 234 567
+                                minLength: 10
+                                maxLength: 16
+                          access_token:
+                            type: string
+                            example: >-
+                              eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                      - type: object
+                        properties:
+                          doctor:
+                            type: object
+                            required:
+                              - name
+                              - surname
+                              - email
+                              - specialisation_id
+                              - appointments_length
+                              - address
+                              - city
+                              - description
+                            properties:
+                              id:
+                                type: integer
+                                example: 13
+                              name:
+                                type: string
+                                example: Peter
+                                maxLength: 64
+                              surname:
+                                type: string
+                                example: Slovák
+                                maxLength: 64
+                              title:
+                                type: string
+                                example: MUDr.
+                                maxLength: 8
+                              email:
+                                type: string
+                                format: email
+                                example: peter.slovak@gmail.com
+                                maxLength: 256
+                              phone:
+                                type: string
+                                example: +421 901 234 567
+                                minLength: 10
+                                maxLength: 16
+                              specialisation_id:
+                                type: integer
+                                example: 13
+                              appointments_length:
+                                type: integer
+                                example: 30
+                                description: Dĺžka jedného vyšetrenia v minútach
+                              address:
+                                type: string
+                                example: Hlboká 32
+                                maxLength: 128
+                              city:
+                                type: string
+                                example: Bratislava II
+                                maxLength: 128
+                              description:
+                                type: string
+                                example: >-
+                                  Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                                  endodontické vyšetrenia.
+                          access_token:
+                            type: string
+                            example: >-
+                              eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+            '401':
+              description: Nesprávne prihlasovacie údaje
+    normalizationContext:
+      groups: doctors.read

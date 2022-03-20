@@ -31,7 +31,9 @@ class ApiAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return str_starts_with($request->getPathInfo(), '/');
+        $path = $request->getPathInfo();
+        $allowed_paths = ['/', '/login', '/register'];
+        return !in_array($path, $allowed_paths);
     }
 
     /**

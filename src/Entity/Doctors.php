@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,10 +14,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Table(name="doctors", indexes={@ORM\Index(name="IDX_B67687BE5627D44C", columns={"specialisation_id"}), @ORM\Index(name="IDX_B67687BEA76ED395", columns={"user_id"})})
  * @ORM\Entity
  */
-#[ApiResource(
-    attributes: ["pagination_items_per_page" => 10],
-    normalizationContext: ['groups' => ['doctors.read']]
-)]
 #[ApiFilter(
     SearchFilter::class, properties: ['name' => 'partial', 'specialisation' => 'exact', 'city' => 'partial']
 )]

@@ -1,0 +1,8 @@
+resources:
+  App\Entity\Doctors:
+    attributes:
+      pagination_items_per_page:
+        10
+    normalizationContext:
+      groups:
+        - doctors.read

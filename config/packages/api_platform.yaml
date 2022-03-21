@@ -1,6 +1,9 @@
 api_platform:
     version: 1.0.0
     title: eVyšetrenie API
+    graphql:
+        graphql_playground:
+            enabled: false
     formats:
         jsonld: [ 'application/ld+json' ]
         json: [ 'application/json' ]

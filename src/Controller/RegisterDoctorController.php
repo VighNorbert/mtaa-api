@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 #[AsController]
 class RegisterDoctorController extends BaseController
 {
+    const ACCEPTED_FILETYPES = ['jpg', 'jpeg', 'png', 'webp'];
 
     private UserRepository $userRepository;
     private SpecialisationRepository $specialisationRepository;
@@ -98,6 +99,10 @@ class RegisterDoctorController extends BaseController
             return new ErrorResponse(new Exception('Špecializácia s daným identifikátorom neexistuje', 400));
         }
 
+        if (isset($content->avatar) && isset($content->avatar->extension) && !in_array($content->avatar->extension, $this::ACCEPTED_FILETYPES)) {
+            return new ErrorResponse(new Exception('Nepovolený formát avataru. Povolené formáty sú: jpg, jpeg, png, webp'));
+        }
+
         $user = new Users();
         $user->setName($parameters['name'])
              ->setSurname($parameters['surname'])
@@ -116,6 +121,40 @@ class RegisterDoctorController extends BaseController
             ->setAddress($parameters['address'])
             ->setCity($parameters['city'])
             ->setDescription($parameters['description']);
+
+        try {
+            if (isset($content->avatar)) {
+                $avatar = $content->avatar;
+                $avatar = [
+                    'file' => (string) $avatar->file,
+                    'filename' => (string) $avatar->filename,
+                    'extension' => strtolower($avatar->extension),
+                ];
+
+                // check if directory exists
+                if (!file_exists('img/')) mkdir('img');
+                if (!file_exists('img/avatars/')) mkdir('img/avatars');
+
+                // find available filename
+                $i = 0;
+                $path = 'img/avatars/' . $avatar['filename'] . '.' . $avatar['extension'];
+                $filename = $avatar['filename'] . '.' . $avatar['extension'];
+                while(file_exists($path)) {
+                    $path = 'img/avatars/' . $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
+                    $filename = $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
+                    $i++;
+                }
+
+                // save image
+                $f = fopen($path, "wb");
+                fwrite($f, base64_decode($avatar['file']));
+                fclose($f);
+
+                $doctor->setAvatarFilename($filename);
+            }
+        } catch (Exception $e) {
+            return new ErrorResponse($e);
+        }
 
         $entityManager->persist($doctor);
 

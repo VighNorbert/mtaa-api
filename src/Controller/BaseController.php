@@ -25,6 +25,7 @@ class BaseController extends AbstractController
                     || ($schema->getAllowedValues() == ValidationSchema::VALIDATE_NUMBER_GTZ && !$this->is_gtz_number(strval($parameter)))
                     || ($schema->getAllowedValues() == ValidationSchema::VALIDATE_EMAIL && !$this->is_email(strval($parameter)))
                     || ($schema->getAllowedValues() == ValidationSchema::VALIDATE_PHONE && !$this->is_phone(strval($parameter)))
+                    || ($schema->getAllowedValues() == ValidationSchema::VALIDATE_TIME && !$this->is_time(strval($parameter)))
                 ) {
                     if ($schema->getDefaultValue() == null) {
                         throw new ValidationException(sprintf('Parameter \'%s\' nemá požadovaný formát.', $key));
@@ -71,6 +72,11 @@ class BaseController extends AbstractController
     public function is_phone(string $parameter): bool
     {
         return preg_match('/^(\+420|\+421|0)( ?[0-9]{3}){3}$/', $parameter);
+    }
+
+    public function is_time(string $parameter): bool
+    {
+        return preg_match('/^([0-1][0-9]|2[0-3])(:[0-5][0-9]){1,2}$/', $parameter);
     }
 
 }

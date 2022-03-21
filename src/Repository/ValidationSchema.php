@@ -10,6 +10,7 @@ class ValidationSchema
     const VALIDATE_NUMBER_GTZ = 2;
     const VALIDATE_EMAIL = 3;
     const VALIDATE_PHONE = 4;
+    const VALIDATE_TIME = 5;
 
     private array|int|null $allowed_values;
     private string|int|null $default_value;

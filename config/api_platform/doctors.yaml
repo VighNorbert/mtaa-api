@@ -120,7 +120,7 @@ resources:
                         description:
                           type: string
                           example: >-
-                            Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                            Pôsobí ako všeobecný zubný lekár pre deti aj dospelých. Vykonáva aj 
                             endodontické vyšetrenia.
                         is_favorite:
                           type: boolean

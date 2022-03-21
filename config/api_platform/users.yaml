@@ -125,7 +125,7 @@ resources:
                               description:
                                 type: string
                                 example: >-
-                                  Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                                  Pôsobí ako všeobecný zubný lekár pre deti aj dospelých. Vykonáva aj
                                   endodontické vyšetrenia.
                           access_token:
                             type: string
@@ -180,6 +180,133 @@ resources:
           responses:
             '201':
               description: Pacient bol vytvorený
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 13
+            '400':
+              description: Nesprávny vstup
+            '422':
+              description: Používateľ s daným emailom už existuje
+      register_doctor:
+        method: post
+        path: /register-doctor
+        controller: App\Controller\RegisterDoctorController
+        openapi_context:
+          summary: Registrácia lekára
+          description: |
+            Nový lekár sa pomocou tohto endpointu môže zaregistrovať.
+          requestBody:
+            description: Lekár, ktorý sa má vytvoriť
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - name
+                    - surname
+                    - email
+                    - phone
+                    - specialisation_id
+                    - appointments_length
+                    - address
+                    - city
+                    - description
+                    - schedules
+                    - password_hash
+                  properties:
+                    name:
+                      type: string
+                      example: Peter
+                      maxLength: 64
+                    surname:
+                      type: string
+                      example: Slovák
+                      maxLength: 64
+                    title:
+                      type: string
+                      example: MUDr.
+                      maxLength: 8
+                    email:
+                      type: string
+                      format: email
+                      example: peter.slovak@gmail.com
+                      maxLength: 256
+                    phone:
+                      type: string
+                      example: +421 901 234 567
+                      minLength: 10
+                      maxLength: 16
+                    specialisation_id:
+                      type: integer
+                      example: 13
+                    appointments_length:
+                      type: integer
+                      example: 30
+                      description: Dĺžka jedného vyšetrenia v minútach
+                    address:
+                      type: string
+                      example: Hlboká 32
+                      maxLength: 128
+                    city:
+                      type: string
+                      example: Bratislava II
+                      maxLength: 128
+                    description:
+                      type: string
+                      example: >-
+                        Pôsobí ako všeobecný zubný lekár pre deti aj dospelých. Vykonáva aj
+                        endodontické vyšetrenia.
+                    schedules:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - weekday
+                          - time_from
+                          - time_to
+                        properties:
+                          weekday:
+                            type: integer
+                            example: 3
+                            minimum: 0
+                            maximum: 6
+                          time_from:
+                            type: string
+                            format: time
+                            example: '09:00:00'
+                          time_to:
+                            type: string
+                            format: time
+                            example: '13:00:00'
+                    avatar:
+                      type: object
+                      required:
+                        - file
+                        - filename
+                        - extension
+                      properties:
+                        file:
+                          type: string
+                          format: binary
+                        filename:
+                          type: string
+                          example: image-1
+                        extension:
+                          type: string
+                          example: jpeg
+                    password_hash:
+                      type: string
+                      example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+                      minLength: 64
+                      maxLength: 64
+          responses:
+            '201':
+              description: Lekár bol vytvorený
               content:
                 application/json:
                   schema:

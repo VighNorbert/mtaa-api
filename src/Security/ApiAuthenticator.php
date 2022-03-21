@@ -3,6 +3,8 @@
 namespace App\Security;
 
 use App\Repository\AccessTokenRepository;
+use App\Response\ErrorResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -75,10 +77,10 @@ class ApiAuthenticator extends AbstractAuthenticator
     /**
      * @param Request $request
      * @param AuthenticationException $exception
-     * @return Response|null
+     * @return JsonResponse
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
-        return new Response('', $exception->getCode());
+        return new ErrorResponse($exception);
     }
 }

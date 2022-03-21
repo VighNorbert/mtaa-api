@@ -135,5 +135,62 @@ resources:
               description: Nesprávny vstup
             '401':
               description: Nesprávne prihlasovacie údaje
+      register:
+        method: post
+        path: /register
+        controller: App\Controller\RegisterController
+        openapi_context:
+          summary: Registrácia pacienta
+          description: Nový pacient sa pomocou tohto endpointu môže zaregistrovať.
+          requestBody:
+            description: Používateľ, ktorý sa má vytvoriť
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - name
+                    - surname
+                    - email
+                    - password_hash
+                  properties:
+                    name:
+                      type: string
+                      example: Peter
+                      maxLength: 64
+                    surname:
+                      type: string
+                      example: Slovák
+                      maxLength: 64
+                    email:
+                      type: string
+                      format: email
+                      example: peter.slovak@gmail.com
+                      maxLength: 256
+                    phone:
+                      type: string
+                      example: +421 901 234 567
+                      minLength: 10
+                      maxLength: 16
+                    password_hash:
+                      type: string
+                      example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+                      minLength: 64
+                      maxLength: 64
+          responses:
+            '201':
+              description: Pacient bol vytvorený
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 13
+            '400':
+              description: Nesprávny vstup
+            '422':
+              description: Používateľ s daným emailom už existuje
     normalizationContext:
       groups: doctors.read

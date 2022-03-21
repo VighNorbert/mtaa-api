@@ -1,7 +1,33 @@
 resources:
   App\Entity\Doctors:
     itemOperations:
-      - get
+      get:
+        method: get
+      avatar:
+        method: get
+        path: /doctor/{id}/avatar
+        controller: App\Controller\DoctorAvatarController
+        openapi_context:
+          summary: Avatar lekára
+          description: |
+            Tento endpoint poskytuje fotografiu vybraného lekára.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+          responses:
+            '200':
+              description: OK
+              content:
+                image/*:
+                  schema:
+                    type: string
+                    format: binary
+            '404':
+              description: Lekára sa nepodarilo nájsť
     collectionOperations:
       get:
         path: /doctors

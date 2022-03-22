@@ -25,8 +25,8 @@ class DoctorsItemController extends AbstractController
 
     public function __invoke(Request $request)
     {
-        $id = intval($request->get('id'));
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
+        $id = intval($request->get('id'));
         $user = $this->getUser();
         $favorite = $this->doctorRepository->findFavorite($user, $id);
         $favorite = !(sizeof($favorite) == 0);

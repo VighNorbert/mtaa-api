@@ -2,7 +2,7 @@ resources:
   App\Entity\Doctors:
     itemOperations:
       get:
-        path: /doctors/{id}
+        path: /doctor/{id}
         controller: App\Controller\DoctorsItemController
         openapi_context:
           summary: Konkrétny lekár
@@ -108,6 +108,31 @@ resources:
                       is_favorite:
                         type: boolean
                         default: false
+            '404':
+              description: Lekára sa nepodarilo nájsť
+      avatar:
+        method: get
+        path: /doctor/{id}/avatar
+        controller: App\Controller\DoctorAvatarController
+        openapi_context:
+          summary: Avatar lekára
+          description: |
+            Tento endpoint poskytuje fotografiu vybraného lekára.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+          responses:
+            '200':
+              description: OK
+              content:
+                image/*:
+                  schema:
+                    type: string
+                    format: binary
             '404':
               description: Lekára sa nepodarilo nájsť
     collectionOperations:
@@ -228,7 +253,7 @@ resources:
                         description:
                           type: string
                           example: >-
-                            Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                            Pôsobí ako všeobecný zubný lekár pre deti aj dospelých. Vykonáva aj 
                             endodontické vyšetrenia.
                         is_favorite:
                           type: boolean

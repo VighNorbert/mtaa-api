@@ -3,17 +3,13 @@
 namespace App\Controller;
 
 use App\Repository\DoctorRepository;
-use App\Repository\SpecialisationRepository;
-use App\Repository\UserRepository;
 use App\Response\DoctorFavorite;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 #[AsController]
-class DoctorsCollectionController extends AbstractController
+class DoctorsCollectionController extends BaseController
 {
 
     private DoctorRepository $doctorRepository;

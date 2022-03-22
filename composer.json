@@ -23,6 +23,7 @@
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.0.*",
         "symfony/maker-bundle": "^1.38",
+        "symfony/mime": "6.0.*",
         "symfony/property-access": "6.0.*",
         "symfony/property-info": "6.0.*",
         "symfony/proxy-manager-bridge": "6.0.*",

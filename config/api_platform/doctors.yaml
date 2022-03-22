@@ -2,6 +2,7 @@ resources:
   App\Entity\Doctors:
     itemOperations:
       get:
+        method: get
         path: /doctor/{id}
         controller: App\Controller\DoctorsItemController
         openapi_context:
@@ -137,6 +138,7 @@ resources:
               description: Lekára sa nepodarilo nájsť
     collectionOperations:
       get:
+        method: get
         path: /doctors
         controller: App\Controller\DoctorsCollectionController
         openapi_context:

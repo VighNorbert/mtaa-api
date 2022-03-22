@@ -1,0 +1,150 @@
+resources:
+  App\Entity\Appointments:
+    itemOperations:
+      - get
+    collectionOperations:
+      get:
+        method: get
+        path: /appointments
+        controller: App\Controller\AppointmentsCollectionController
+        openapi_context:
+          summary: Zoznam vyšetrení
+          security:
+              - bearerAuth: [ patient, doctor ]
+          description: |
+            Pomocou tohto endpointu si vie zobraziť pacient, alebo lekár, zoznam
+            termínov vyšetrenia, ktoré sa ho týkajú.
+          parameters:
+            - in: query
+              name: date
+              description: Dátum vyšetrenia
+              schema:
+                type: string
+                format: date
+              required: false
+          responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 35
+                        time_from:
+                          type: string
+                          format: time
+                          example: '09:00'
+                        time_to:
+                          type: string
+                          format: time
+                          example: '09:30'
+                        date:
+                          type: string
+                          format: date
+                          example: 2022.03.31
+                        type:
+                          type: string
+                          example: F
+                        description:
+                          type: string
+                          example: Bolí ma zúbok
+                        doctor:
+                          type: object
+                          required:
+                            - name
+                            - surname
+                            - email
+                            - specialisation
+                            - appointments_length
+                            - address
+                            - city
+                            - description
+                          properties:
+                            id:
+                              type: integer
+                              example: 13
+                            name:
+                              type: string
+                              example: Peter
+                              maxLength: 64
+                            surname:
+                              type: string
+                              example: Slovák
+                              maxLength: 64
+                            title:
+                              type: string
+                              example: MUDr.
+                              maxLength: 8
+                            email:
+                              type: string
+                              format: email
+                              example: peter.slovak@gmail.com
+                              maxLength: 256
+                            phone:
+                              type: string
+                              example: +421 901 234 567
+                              minLength: 10
+                              maxLength: 16
+                            specialisation:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 13
+                                title:
+                                  type: string
+                                  example: Ortopéd
+                            appointments_length:
+                              type: integer
+                              example: 30
+                              description: Dĺžka jedného vyšetrenia v minútach
+                            address:
+                              type: string
+                              example: Hlboká 32
+                              maxLength: 128
+                            city:
+                              type: string
+                              example: Bratislava II
+                              maxLength: 128
+                            description:
+                              type: string
+                              example: >-
+                                Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                                endodontické vyšetrenia.
+                        patient:
+                          type: object
+                          required:
+                            - name
+                            - surname
+                            - email
+                          properties:
+                            id:
+                              type: integer
+                              example: 13
+                            name:
+                              type: string
+                              example: Peter
+                              maxLength: 64
+                            surname:
+                              type: string
+                              example: Slovák
+                              maxLength: 64
+                            email:
+                              type: string
+                              format: email
+                              example: peter.slovak@gmail.com
+                              maxLength: 256
+                            phone:
+                              type: string
+                              example: +421 901 234 567
+                              minLength: 10
+                              maxLength: 16
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva

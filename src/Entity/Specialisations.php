@@ -12,11 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Table(name="specialisations")
  * @ORM\Entity(repositoryClass="App\Repository\SpecialisationRepository")
  */
-#[ApiResource(
-    collectionOperations: ['get'],
-    itemOperations: ['get'],
-    attributes: ["pagination_enabled" => false]
-)]
+
 class Specialisations
 {
     /**

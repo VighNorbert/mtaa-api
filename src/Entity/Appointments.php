@@ -9,8 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Appointments
  *
  * @ORM\Table(name="appointments", indexes={@ORM\Index(name="IDX_6A41727A6B899279", columns={"patient_id"}), @ORM\Index(name="IDX_6A41727A87F4FB17", columns={"doctor_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\AppointmentRepository")
  */
+
 class Appointments
 {
     /**
@@ -122,9 +123,9 @@ class Appointments
         return $this;
     }
 
-    public function getDate(): ?DateTime
+    public function getDate(): ?string
     {
-        return $this->date;
+        return $this->date->format('Y-m-d');
     }
 
     public function setDate(DateTime $date): self
@@ -134,9 +135,9 @@ class Appointments
         return $this;
     }
 
-    public function getTimeFrom(): ?DateTime
+    public function getTimeFrom(): ?string
     {
-        return $this->timeFrom;
+        return $this->timeFrom->format('H:i');
     }
 
     public function setTimeFrom(DateTime $timeFrom): self
@@ -146,9 +147,9 @@ class Appointments
         return $this;
     }
 
-    public function getTimeTo(): ?DateTime
+    public function getTimeTo(): ?string
     {
-        return $this->timeTo;
+        return $this->timeTo->format('H:i');
     }
 
     public function setTimeTo(DateTime $timeTo): self

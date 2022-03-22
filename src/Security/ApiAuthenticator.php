@@ -45,7 +45,6 @@ class ApiAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): Passport
     {
         $token = $request->headers->get('x-auth-token');
-
         if (empty($token)) {
             throw new CustomUserMessageAuthenticationException('Chýbajúca autentifikácia', [], 401);
         }

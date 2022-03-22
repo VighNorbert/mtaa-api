@@ -17,14 +17,10 @@ class DoctorsCollectionController extends AbstractController
 {
 
     private DoctorRepository $doctorRepository;
-    private UserRepository $userRepository;
-    private SpecialisationRepository $specialisationRepository;
 
-    public function __construct(DoctorRepository $doctorRepository, UserRepository $userRepository, SpecialisationRepository $specialisationRepository)
+    public function __construct(DoctorRepository $doctorRepository)
     {
         $this->doctorRepository = $doctorRepository;
-        $this->userRepository = $userRepository;
-        $this->specialisationRepository = $specialisationRepository;
     }
 
     public function __invoke(Request $request)

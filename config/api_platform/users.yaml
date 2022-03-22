@@ -135,5 +135,27 @@ resources:
               description: Nesprávny vstup
             '401':
               description: Nesprávne prihlasovacie údaje
-    normalizationContext:
-      groups: doctors.read
+      specialisations:
+        method: get
+        path: /specialisations
+        openapi_context:
+          summary: Zoznam všetkých špecializácií lekárov
+          description: >
+            Pomocou tohto endpointu si vie ktokoľvek zistiť zoznam všetkých
+            existujúcich špecializácií.
+          responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        title:
+                          type: string
+                          example: Stomatológ

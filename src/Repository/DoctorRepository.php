@@ -38,4 +38,28 @@ class DoctorRepository extends ServiceEntityRepository
         $statement = $this->_em->getConnection()->executeQuery($sql, $queryParams);
         return $statement->fetchAllAssociative();
     }
+
+    public function findFavorite(Users $user, int $id): array {
+        $sql = "SELECT (ufd.patient_id is not null) AS is_favorite
+                FROM user_fav_doctors ufd
+                WHERE ufd.patient_id=:p AND ufd.doctor_id=:id";
+        $queryParams = [
+            "p" => $user->getId(),
+            "id" => $id
+        ];
+        $statement = $this->_em->getConnection()->executeQuery($sql, $queryParams);
+        return $statement->fetchAllAssociative();
+    }
+
+    public function filterSchedules(int $id) {
+        $sql = "SELECT weekday, time_from, time_to
+                FROM work_schedules w 
+                WHERE doctor_id=:id";
+        $queryParams = [
+            "id" => $id
+        ];
+        $statement = $this->_em->getConnection()->executeQuery($sql, $queryParams);
+        return $statement->fetchAllAssociative();
+    }
+
 }

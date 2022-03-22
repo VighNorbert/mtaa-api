@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="doctors", indexes={@ORM\Index(name="IDX_B67687BE5627D44C", columns={"specialisation_id"}), @ORM\Index(name="IDX_B67687BEA76ED395", columns={"user_id"})})
  * @ORM\Entity(repositoryClass="App\Repository\DoctorRepository")
  */
+
 class Doctors
 {
     /**

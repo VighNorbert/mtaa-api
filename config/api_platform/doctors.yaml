@@ -1,7 +1,115 @@
 resources:
   App\Entity\Doctors:
     itemOperations:
-      - get
+      get:
+        path: /doctors/{id}
+        controller: App\Controller\DoctorsItemController
+        openapi_context:
+          summary: Konkrétny lekár
+          description: |
+            Tento endpoint poskytuje detailné informácie o konkrétnom lekárovi.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+          responses:
+            '200':
+              description: Výsledky vyhľadávania
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - name
+                      - surname
+                      - email
+                      - specialisation
+                      - appointments_length
+                      - address
+                      - city
+                      - description
+                    properties:
+                      id:
+                        type: integer
+                        example: 13
+                      name:
+                        type: string
+                        example: Peter
+                        maxLength: 64
+                      surname:
+                        type: string
+                        example: Slovák
+                        maxLength: 64
+                      title:
+                        type: string
+                        example: MUDr.
+                        maxLength: 8
+                      email:
+                        type: string
+                        format: email
+                        example: peter.slovak@gmail.com
+                        maxLength: 256
+                      phone:
+                        type: string
+                        example: +421 901 234 567
+                        minLength: 10
+                        maxLength: 16
+                      specialisation:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 13
+                          title:
+                            type: string
+                            example: Ortopéd
+                      appointments_length:
+                        type: integer
+                        example: 30
+                        description: Dĺžka jedného vyšetrenia v minútach
+                      address:
+                        type: string
+                        example: Hlboká 32
+                        maxLength: 128
+                      city:
+                        type: string
+                        example: Bratislava II
+                        maxLength: 128
+                      description:
+                        type: string
+                        example: >-
+                          Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                          endodontické vyšetrenia.
+                      schedules:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - weekday
+                            - time_from
+                            - time_to
+                          properties:
+                            weekday:
+                              type: integer
+                              example: 3
+                              minimum: 0
+                              maximum: 6
+                            time_from:
+                              type: string
+                              format: time
+                              example: '09:00'
+                            time_to:
+                              type: string
+                              format: time
+                              example: '13:00'
+                      is_favorite:
+                        type: boolean
+                        default: false
+            '404':
+              description: Lekára sa nepodarilo nájsť
     collectionOperations:
       get:
         path: /doctors

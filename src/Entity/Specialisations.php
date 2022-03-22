@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -11,6 +12,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Table(name="specialisations")
  * @ORM\Entity(repositoryClass="App\Repository\SpecialisationRepository")
  */
+#[ApiResource(
+    collectionOperations: ['get'],
+    itemOperations: ['get'],
+    attributes: ["pagination_enabled" => false]
+)]
 class Specialisations
 {
     /**

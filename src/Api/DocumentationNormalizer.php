@@ -29,7 +29,8 @@ final class DocumentationNormalizer implements NormalizerInterface
         $docs = $this->decorated->normalize($object, $format, $context);
 
         $paths = [
-            '/login' => [201, 422]
+            '/login' => [201, 422],
+            '/doctor/{id}/favorite' => [201, 400, 422]
         ];
 
         foreach ($paths as $path => $statusCodes) {

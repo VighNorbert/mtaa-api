@@ -16,6 +16,7 @@ resources:
               schema:
                 type: integer
               required: true
+          requestBody:
           responses:
             '200':
               description: Výsledky vyhľadávania
@@ -136,7 +137,65 @@ resources:
                     format: binary
             '404':
               description: Lekára sa nepodarilo nájsť
+      removeFavorite:
+        method: delete
+        path: /doctor/{id}/favorite
+        controller: App\Controller\DoctorFavoriteRemoveController
+        openapi_context:
+          summary: Odstránenie lekára z obľúbených
+          security:
+              - bearerAuth: [ patient ]
+          description: |
+            Pomocou tohto endpointu si vie prihlásený pacient odstrániť lekára zo
+            zoznamu obľúbených lekárov.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+          responses:
+            '204':
+              description: Lekár bol odobraný
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva
+            '404':
+              description: Lekára sa nepodarilo nájsť
     collectionOperations:
+      addFavorite:
+        method: post
+        path: /doctor/{id}/favorite
+        controller: App\Controller\DoctorFavoriteAddController
+        openapi_context:
+          summary: Pridanie lekára ako obľúbeného
+          security:
+            - bearerAuth: [ patient ]
+          description: |
+            Pomocou tohto endpointu si vie prihlásený pacient priradiť nového lekára
+            do zoznamu svojich obľúbených lekárov.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+          requestBody:
+            description: Používateľ, ktorý sa má vytvoriť
+            content:
+              application/json: {}
+          responses:
+            '204':
+              description: Lekár bol pridaný
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva
+            '404':
+              description: Lekára sa nepodarilo nájsť
       get:
         method: get
         path: /doctors

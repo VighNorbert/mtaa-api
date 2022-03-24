@@ -55,7 +55,7 @@ class Appointments
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=64, nullable=false)
+     * @ORM\Column(name="description", type="string", length=64, nullable=true)
      */
     private string $description;
 

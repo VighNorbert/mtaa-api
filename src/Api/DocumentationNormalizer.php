@@ -30,12 +30,14 @@ final class DocumentationNormalizer implements NormalizerInterface
 
         $paths = [
             '/login' => [201, 422],
-            '/doctor/{id}/favorite' => [201, 400, 422]
+            '/doctor/{id}/favorite' => [201, 400, 422],
+            '/doctor/{id}/appointment/{appointment_id}' => [200, 400, 422]
         ];
 
         foreach ($paths as $path => $statusCodes) {
             foreach ($statusCodes as $statusCode) {
                 unset($docs['paths'][$path]['post']['responses'][$statusCode]);
+                unset($docs['paths'][$path]['put']['responses'][$statusCode]);
             }
         }
 

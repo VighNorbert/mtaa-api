@@ -148,3 +148,59 @@ resources:
               description: Chýbajúca autentifikácia
             '403':
               description: Nedostatočné práva
+      post:
+        method: put
+        path: /doctor/{id}/appointment/{appointment_id}
+        controller: App\Controller\AppointmentsAddController
+        openapi_context:
+          summary: Objednanie sa na vyšetrenie
+          security:
+              - bearerAuth: [ patient ]
+          description: |
+            Pomocou tohto endpointu sa vie prihlásený pacient objednať na termín
+            vyšetrenia u vybraného lekára.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+            - in: path
+              name: appointment_id
+              description: ID termínu vyšetrenia
+              schema:
+                type: integer
+              required: true
+            - in: query
+              name: type
+              description: Druh vyšetrenia (Online / Fyzicky)
+              schema:
+                type: string
+                enum:
+                  - O
+                  - F
+              required: true
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - description
+                  properties:
+                    description:
+                      type: string
+                      example: bolesť hrdla
+                      maxLength: 64
+          responses:
+            '204':
+              description: Termín bol zarezervovaný
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva
+            '404':
+              description: Lekára alebo termín vyšetrenia sa nepodarilo nájsť
+            '409':
+              description: Termín je už obsadený

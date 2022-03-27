@@ -1,7 +1,30 @@
 resources:
   App\Entity\Specialisations:
     itemOperations:
-      - get
+      get:
+        method: get
+        path: /specialisation/{id}
+        openapi_context:
+          summary: Detail konkrétnej špecializácie
+          description: >
+            Pomocou tohto endpointu si vie používateľ vyhľadať konkrétnu
+            špecializáciu podľa jej identifikátora.
+          responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      title:
+                        type: string
+                        example: Stomatológ
+            '404':
+              description: Špecializáciu sa nepodarilo nájsť
     collectionOperations:
       specialisations:
         method: get

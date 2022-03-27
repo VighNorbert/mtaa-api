@@ -82,14 +82,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?DateTime $deletedAt;
 
     /**
-     * @var Doctors
+     * @var Doctors|null
      *
      * @ORM\ManyToOne(targetEntity="Doctors", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="doctor_id", referencedColumnName="id")
      * })
      */
-    private Doctors $doctor;
+    private ?Doctors $doctor = null;
 
     public function __construct()
     {
@@ -212,7 +212,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        if ($this->getDoctor() instanceof Doctors) {
+        if ($this->doctor != null) {
             return ['ROLE_DOCTOR', 'ROLE_PATIENT'];
         }
         return ['ROLE_PATIENT'];

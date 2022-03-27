@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\AccessTokens;
 use App\Repository\UserRepository;
+use App\Response\ErrorResponse;
 use App\Response\LoginResponse;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -39,6 +40,10 @@ class LoginController extends BaseController
 
         $user = $this->userRepository->findOneBy(['email' => $email, 'passwordHash' => $password]);
 
+        if (!$user) {
+            return new ErrorResponse(new Exception('Nesprávne prihlasovacie údaje', 422));
+        }
+
         $token = new AccessTokens();
         $token->setUser($user);
         $token->setToken(bin2hex(random_bytes(128)));
@@ -52,7 +57,7 @@ class LoginController extends BaseController
 
         return new JsonResponse(
             new LoginResponse(
-                $user->getDoctor() ?? $user,
+                in_array('ROLE_DOCTOR', $user->getRoles()) ? $user->getDoctor() : $user,
                 $token->getToken()
             )
         );

@@ -7,6 +7,7 @@ use App\Entity\Doctors;
 use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 class AppointmentRepository extends ServiceEntityRepository
 {
@@ -31,5 +32,29 @@ class AppointmentRepository extends ServiceEntityRepository
         ];
         $statement = $this->_em->getConnection()->executeQuery($sql, $params);
         return $statement->fetchAllAssociative();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getMyAppointment(int $id, Users $user, ?Doctors $doctor)
+    {
+        $doc_id = ($doctor != null) ? $doctor->getId() : null;
+        $sql = "SELECT id, doctor_id, patient_id
+                FROM appointments
+                WHERE appointments.id = :aid";
+//                " .(($doctor != null) ? "AND (doctor_id=:did)" : "AND (patient_id=:pid)");
+        $params = [
+            "aid" => $id,
+//            "did" => $doc_id,
+//            "pid" => $user->getId()
+        ];
+        $statement = $this->_em->getConnection()->executeQuery($sql, $params);
+        $result = $statement->fetchAssociative();
+        if ($result == null)
+            return null;
+        if ($result['doctor_id'] != $doc_id && $result['patient_id'] != $user->getId())
+            throw new Exception('Nedostatočné práva', 403);
+        return $statement->fetchAssociative();
     }
 }

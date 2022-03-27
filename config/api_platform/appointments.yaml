@@ -1,7 +1,174 @@
 resources:
   App\Entity\Appointments:
     itemOperations:
-      - get
+      get:
+        method: get
+        path: /appointment/{id}
+        controller: App\Controller\AppointmentsItemController
+        openapi_context:
+          summary: Detail konkrétneho vyšetrenia
+          description: |
+            Pomocou tohto endpointu si vie zobraziť pacient, alebo lekár, detail
+            konkrétneho vyšetrenia, ktoré sa ho týka.
+          responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 35
+                        time_from:
+                          type: string
+                          format: time
+                          example: '09:00'
+                        time_to:
+                          type: string
+                          format: time
+                          example: '09:30'
+                        date:
+                          type: string
+                          format: date
+                          example: 2022.03.31
+                        type:
+                          type: string
+                          example: F
+                        description:
+                          type: string
+                          example: Bolí ma zúbok
+                        doctor:
+                          type: object
+                          required:
+                            - name
+                            - surname
+                            - email
+                            - specialisation
+                            - appointments_length
+                            - address
+                            - city
+                            - description
+                          properties:
+                            id:
+                              type: integer
+                              example: 13
+                            name:
+                              type: string
+                              example: Peter
+                              maxLength: 64
+                            surname:
+                              type: string
+                              example: Slovák
+                              maxLength: 64
+                            title:
+                              type: string
+                              example: MUDr.
+                              maxLength: 8
+                            email:
+                              type: string
+                              format: email
+                              example: peter.slovak@gmail.com
+                              maxLength: 256
+                            phone:
+                              type: string
+                              example: +421 901 234 567
+                              minLength: 10
+                              maxLength: 16
+                            specialisation:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 13
+                                title:
+                                  type: string
+                                  example: Ortopéd
+                            appointments_length:
+                              type: integer
+                              example: 30
+                              description: Dĺžka jedného vyšetrenia v minútach
+                            address:
+                              type: string
+                              example: Hlboká 32
+                              maxLength: 128
+                            city:
+                              type: string
+                              example: Bratislava II
+                              maxLength: 128
+                            description:
+                              type: string
+                              example: >-
+                                Pôsobí ako všeobecná zubná lekárka pre deti aj dospelých. Vykonáva aj
+                                endodontické vyšetrenia.
+                        patient:
+                          type: object
+                          required:
+                            - name
+                            - surname
+                            - email
+                          properties:
+                            id:
+                              type: integer
+                              example: 13
+                            name:
+                              type: string
+                              example: Peter
+                              maxLength: 64
+                            surname:
+                              type: string
+                              example: Slovák
+                              maxLength: 64
+                            email:
+                              type: string
+                              format: email
+                              example: peter.slovak@gmail.com
+                              maxLength: 256
+                            phone:
+                              type: string
+                              example: +421 901 234 567
+                              minLength: 10
+                              maxLength: 16
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva
+            '404':
+              description: Termín vyšetrenia sa nepodarilo nájsť
+      delete:
+        method: delete
+        path: /doctor/{id}/appointment/{appointment_id}
+        controller: App\Controller\AppointmentDeleteController
+        openapi_context:
+          summary: Zrušenie vyšetrenia
+          description: |
+            Pomocou tohto endpointu vie prihlásený používateľ (pacient, alebo lekár,
+            ktorého sa termín týka) zrušiť daný termín vyšetrenia.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+            - in: path
+              name: appointment_id
+              description: ID termínu vyšetrenia
+              schema:
+                type: integer
+              required: true
+          responses:
+            '204':
+              description: Termín bol zrušený
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva
+            '404':
+              description: Termín neexistuje
     collectionOperations:
       get:
         method: get
@@ -9,8 +176,6 @@ resources:
         controller: App\Controller\AppointmentsCollectionController
         openapi_context:
           summary: Zoznam vyšetrení
-          security:
-              - bearerAuth: [ patient, doctor ]
           description: |
             Pomocou tohto endpointu si vie zobraziť pacient, alebo lekár, zoznam
             termínov vyšetrenia, ktoré sa ho týkajú.
@@ -154,8 +319,6 @@ resources:
         controller: App\Controller\AppointmentsAddController
         openapi_context:
           summary: Objednanie sa na vyšetrenie
-          security:
-              - bearerAuth: [ patient ]
           description: |
             Pomocou tohto endpointu sa vie prihlásený pacient objednať na termín
             vyšetrenia u vybraného lekára.

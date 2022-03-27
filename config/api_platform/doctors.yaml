@@ -143,8 +143,6 @@ resources:
         controller: App\Controller\DoctorFavoriteRemoveController
         openapi_context:
           summary: Odstránenie lekára z obľúbených
-          security:
-              - bearerAuth: [ patient ]
           description: |
             Pomocou tohto endpointu si vie prihlásený pacient odstrániť lekára zo
             zoznamu obľúbených lekárov.
@@ -171,8 +169,6 @@ resources:
         controller: App\Controller\DoctorFavoriteAddController
         openapi_context:
           summary: Pridanie lekára ako obľúbeného
-          security:
-            - bearerAuth: [ patient ]
           description: |
             Pomocou tohto endpointu si vie prihlásený pacient priradiť nového lekára
             do zoznamu svojich obľúbených lekárov.

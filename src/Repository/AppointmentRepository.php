@@ -55,6 +55,6 @@ class AppointmentRepository extends ServiceEntityRepository
             return null;
         if ($result['doctor_id'] != $doc_id && $result['patient_id'] != $user->getId())
             throw new Exception('Nedostatočné práva', 403);
-        return $statement->fetchAssociative();
+        return $result;
     }
 }

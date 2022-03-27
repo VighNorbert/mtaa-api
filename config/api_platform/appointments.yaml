@@ -138,37 +138,6 @@ resources:
               description: Nedostatočné práva
             '404':
               description: Termín vyšetrenia sa nepodarilo nájsť
-      delete:
-        method: delete
-        path: /doctor/{id}/appointment/{appointment_id}
-        controller: App\Controller\AppointmentDeleteController
-        openapi_context:
-          summary: Zrušenie vyšetrenia
-          description: |
-            Pomocou tohto endpointu vie prihlásený používateľ (pacient, alebo lekár,
-            ktorého sa termín týka) zrušiť daný termín vyšetrenia.
-          parameters:
-            - in: path
-              name: id
-              description: ID lekára
-              schema:
-                type: integer
-              required: true
-            - in: path
-              name: appointment_id
-              description: ID termínu vyšetrenia
-              schema:
-                type: integer
-              required: true
-          responses:
-            '204':
-              description: Termín bol zrušený
-            '401':
-              description: Chýbajúca autentifikácia
-            '403':
-              description: Nedostatočné práva
-            '404':
-              description: Termín neexistuje
     collectionOperations:
       get:
         method: get
@@ -367,3 +336,34 @@ resources:
               description: Lekára alebo termín vyšetrenia sa nepodarilo nájsť
             '409':
               description: Termín je už obsadený
+      delete:
+        method: delete
+        path: /doctor/{id}/appointment/{appointment_id}
+        controller: App\Controller\AppointmentRemoveController
+        openapi_context:
+          summary: Zrušenie vyšetrenia
+          description: |
+            Pomocou tohto endpointu vie prihlásený používateľ (pacient, alebo lekár,
+            ktorého sa termín týka) zrušiť daný termín vyšetrenia.
+          parameters:
+            - in: path
+              name: id
+              description: ID lekára
+              schema:
+                type: integer
+              required: true
+            - in: path
+              name: appointment_id
+              description: ID termínu vyšetrenia
+              schema:
+                type: integer
+              required: true
+          responses:
+            '204':
+              description: Termín bol zrušený
+            '401':
+              description: Chýbajúca autentifikácia
+            '403':
+              description: Nedostatočné práva
+            '404':
+              description: Termín neexistuje

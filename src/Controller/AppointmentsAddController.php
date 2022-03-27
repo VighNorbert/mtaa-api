@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AppointmentRepository;
 use App\Response\ErrorResponse;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +44,7 @@ class AppointmentsAddController extends BaseController
         } catch (Exception) {
             return new Response('', 400);
         }
+        $appointment->setUpdatedAt(new DateTime());
         $appointment->setPatient($user);
         $appointment->setType($request->get('type'));
 

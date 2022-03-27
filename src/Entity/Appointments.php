@@ -53,11 +53,11 @@ class Appointments
     private DateTime $timeTo;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="description", type="string", length=64, nullable=true)
      */
-    private string $description;
+    private ?string $description;
 
     /**
      * @var DateTime
@@ -164,7 +164,7 @@ class Appointments
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 

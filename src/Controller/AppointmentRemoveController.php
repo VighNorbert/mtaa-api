@@ -9,6 +9,7 @@ use App\Response\ErrorResponse;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -34,10 +35,10 @@ class AppointmentRemoveController extends BaseController
         try {
             $app = $this->appointmentRepository->getMyAppointment($appointment_id, $user, $doctor);
             if ($app == null) {
-                throw new Exception('Termín neexistuje', 404);
+                throw new Exception('Termín neexistuje', Response::HTTP_NOT_FOUND);
             }
             if (isset($app['doctor_id']) && $app['doctor_id'] != $id) {
-                throw new Exception('Nedostatočné práva', 403);
+                throw new Exception('Nedostatočné práva', Response::HTTP_FORBIDDEN);
             }
         } catch (Exception $e) {
             return new ErrorResponse($e);
@@ -49,6 +50,6 @@ class AppointmentRemoveController extends BaseController
         $appointment->setUpdatedAt(new DateTime());
         $entityManager->flush();
 
-        return new Response('', 204);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

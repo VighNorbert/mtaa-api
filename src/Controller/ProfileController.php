@@ -8,6 +8,7 @@ use App\Entity\WorkSchedules;
 use App\Repository\SpecialisationRepository;
 use App\Repository\UserRepository;
 use App\Repository\ValidationSchema;
+use App\Repository\WorkScheduleRepository;
 use App\Response\ErrorResponse;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,21 +19,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class RegisterDoctorController extends BaseController
+class ProfileController extends BaseController
 {
     const ACCEPTED_FILETYPES = ['jpg', 'jpeg', 'png', 'webp'];
 
     private UserRepository $userRepository;
     private SpecialisationRepository $specialisationRepository;
+    private WorkScheduleRepository $workScheduleRepository;
 
-    public function __construct(UserRepository $userRepository, SpecialisationRepository $specialisationRepository)
+    public function __construct(UserRepository $userRepository, SpecialisationRepository $specialisationRepository, WorkScheduleRepository $workScheduleRepository)
     {
         $this->userRepository = $userRepository;
         $this->specialisationRepository = $specialisationRepository;
+        $this->workScheduleRepository = $workScheduleRepository;
     }
 
     public function __invoke(Request $request, ManagerRegistry $doctrine)
     {
+        $this->denyAccessUnlessGranted('ROLE_DOCTOR');
         $entityManager = $doctrine->getManager();
         try {
             $content = $request->getContent();
@@ -54,7 +58,6 @@ class RegisterDoctorController extends BaseController
                     'address' => (string) $content->address,
                     'city' => (string) $content->city,
                     'description' => (string) $content->description,
-                    'schedules' => $content->schedules,
                 ],
                 [
                     'name' => new ValidationSchema(max: 64),
@@ -70,27 +73,31 @@ class RegisterDoctorController extends BaseController
                     'description' => new ValidationSchema(max: 128),
                 ]
             );
-            foreach ($parameters['schedules'] as $key => $schedule) {
-                $parameters['schedules'][$key] = $this->parametersValidation(
-                    [
-                        'weekday' => (int) $schedule->weekday,
-                        'time_from' => (string) $schedule->time_from,
-                        'time_to' => (string) $schedule->time_to,
-                    ],
-                    [
-                        'weekday' => new ValidationSchema(ValidationSchema::VALIDATE_NUMBER, min: 0, max: 6),
-                        'time_from' => new ValidationSchema(ValidationSchema::VALIDATE_TIME),
-                        'time_to' => new ValidationSchema(ValidationSchema::VALIDATE_TIME),
-                    ]
-                );
+            if (isset($content->schedules)) {
+                foreach ($content->schedules as $key => $schedule) {
+                    $content->schedules[$key] = $this->parametersValidation(
+                        [
+                            'weekday' => (int)$schedule->weekday,
+                            'time_from' => (string)$schedule->time_from,
+                            'time_to' => (string)$schedule->time_to,
+                        ],
+                        [
+                            'weekday' => new ValidationSchema(ValidationSchema::VALIDATE_NUMBER, min: 0, max: 6),
+                            'time_from' => new ValidationSchema(ValidationSchema::VALIDATE_TIME),
+                            'time_to' => new ValidationSchema(ValidationSchema::VALIDATE_TIME),
+                        ]
+                    );
+                }
             }
         } catch (Exception $e) {
             return new ErrorResponse($e);
         }
 
-        $user = $this->userRepository->findOneBy(['email' => $parameters['email']]);
+        $user = $this->getUser();
 
-        if ($user) {
+        $conflictingUser = $this->userRepository->findOneBy(['email' => $parameters['email']]);
+
+        if ($conflictingUser && $user->getId() !== $conflictingUser->getId()) {
             return new ErrorResponse(new Exception('Používateľ s daným emailom už existuje', Response::HTTP_UNPROCESSABLE_ENTITY));
         }
 
@@ -101,7 +108,8 @@ class RegisterDoctorController extends BaseController
         }
 
         if (isset($content->avatar)) {
-            if (isset($content->avatar->extension) && !in_array($content->avatar->extension, $this::ACCEPTED_FILETYPES)) {
+            if (isset($content->avatar->file) && $content->avatar->file != null
+                && isset($content->avatar->extension) && !in_array($content->avatar->extension, $this::ACCEPTED_FILETYPES)) {
                 return new ErrorResponse(new Exception('Nepovolený formát avataru. Povolené formáty sú: jpg, jpeg, png, webp'));
             }
             if (isset($content->avatar->file) && $content->avatar->file != null) {
@@ -112,76 +120,91 @@ class RegisterDoctorController extends BaseController
             }
         }
 
-        $user = new Users();
         $user->setName($parameters['name'])
              ->setSurname($parameters['surname'])
              ->setEmail($parameters['email'])
              ->setPhone($parameters['phone'])
-             ->setPasswordHash($parameters['password']);
+             ->setPasswordHash($parameters['password'])
+             ->setUpdatedAt(new DateTime());
 
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        $doctor = new Doctors();
-        $doctor->setUser($user)
-            ->setSpecialisation($specialisation)
+        $doctor = $user->getDoctor();
+        $doctor->setSpecialisation($specialisation)
             ->setTitle($parameters['title'])
             ->setAppointmentsLength($parameters['appointments_length'])
             ->setAddress($parameters['address'])
             ->setCity($parameters['city'])
-            ->setDescription($parameters['description']);
+            ->setDescription($parameters['description'])
+            ->setUpdatedAt(new DateTime());
 
         try {
             if (isset($content->avatar)) {
-                $avatar = $content->avatar;
-                $avatar = [
-                    'file' => (string) $avatar->file,
-                    'filename' => (string) $avatar->filename,
-                    'extension' => strtolower($avatar->extension),
-                ];
 
-                // check if directory exists
-                if (!file_exists('img/')) mkdir('img');
-                if (!file_exists('img/avatars/')) mkdir('img/avatars');
-
-                // find available filename
-                $i = 0;
-                $path = 'img/avatars/' . $avatar['filename'] . '.' . $avatar['extension'];
-                $filename = $avatar['filename'] . '.' . $avatar['extension'];
-                while(file_exists($path)) {
-                    $path = 'img/avatars/' . $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
-                    $filename = $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
-                    $i++;
+                // remove old file
+                $filename = $doctor->getAvatarFilename();
+                if ($filename) {
+                    $path = 'img/avatars/' . $filename;
+                    $doctor->setAvatarFilename(null);
+                    if (file_exists($path))
+                        unlink($path);
                 }
 
-                // save image
-                $f = fopen($path, "wb");
-                fwrite($f, base64_decode($avatar['file']));
-                fclose($f);
+                if (isset($content->avatar->file) && $content->avatar->file !== null) {
+                    $avatar = $content->avatar;
+                    $avatar = [
+                        'file' => $avatar->file,
+                        'filename' => (string)$avatar->filename,
+                        'extension' => strtolower($avatar->extension),
+                    ];
 
-                $doctor->setAvatarFilename($filename);
+                    // check if directory exists
+                    if (!file_exists('img/')) mkdir('img');
+                    if (!file_exists('img/avatars/')) mkdir('img/avatars');
+
+                    // find available filename
+                    $i = 0;
+                    $path = 'img/avatars/' . $avatar['filename'] . '.' . $avatar['extension'];
+                    $filename = $avatar['filename'] . '.' . $avatar['extension'];
+                    while (file_exists($path)) {
+                        $path = 'img/avatars/' . $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
+                        $filename = $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
+                        $i++;
+                    }
+
+                    // save image
+                    $f = fopen($path, "wb");
+                    fwrite($f, base64_decode($avatar['file']));
+                    fclose($f);
+
+                    $doctor->setAvatarFilename($filename);
+                }
             }
         } catch (Exception $e) {
             return new ErrorResponse($e);
         }
 
-        $entityManager->persist($doctor);
+        if (isset($content->schedules)) {
+            $nextMonth = new DateTime();
+            $nextMonth->add(new \DateInterval('P31D'));
 
-        $user->setDoctor($doctor);
-        $entityManager->persist($user);
+            $work_schedules = $this->workScheduleRepository->findBy(['doctor' => $doctor->getId(), 'deletedAt' => null]);
+            foreach ($work_schedules as $ws) {
+                $ws->setUpdatedAt(new DateTime())->setDeletedAt($nextMonth);
+            }
 
-        foreach($parameters['schedules'] as $schedule) {
-            $work_schedule = new WorkSchedules();
-            $work_schedule->setDoctor($doctor)
-                ->setWeekday($schedule['weekday'])
-                ->setTimeFrom(new DateTime($schedule['time_from']))
-                ->setTimeTo(new DateTime($schedule['time_to']));
+            foreach ($content->schedules as $schedule) {
+                $work_schedule = new WorkSchedules();
+                $work_schedule->setDoctor($doctor)
+                    ->setWeekday($schedule['weekday'])
+                    ->setTimeFrom(new DateTime($schedule['time_from']))
+                    ->setTimeTo(new DateTime($schedule['time_to']))
+                    ->setCreatedAt($nextMonth);
 
-            $entityManager->persist($work_schedule);
+                $entityManager->persist($work_schedule);
+            }
         }
 
         $entityManager->flush();
 
-        return new JsonResponse(['id' => $user->getId()], Response::HTTP_CREATED);
+        return new JsonResponse([],Response::HTTP_NO_CONTENT);
     }
 }

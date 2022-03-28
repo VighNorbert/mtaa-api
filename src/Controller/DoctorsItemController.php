@@ -31,7 +31,7 @@ class DoctorsItemController extends AbstractController
         $favorite = $this->doctorRepository->findFavorite($user, $id);
         $favorite = !(sizeof($favorite) == 0);
         $doctor = $this->doctorRepository->find($id);
-        $schedules = $this->doctorRepository->filterSchedules($id);
+        $schedules = $this->doctorRepository->filterSchedules($id); //TODO
         $result = new DoctorDetail($doctor, $favorite, $schedules);
         return new JsonResponse($result);
     }

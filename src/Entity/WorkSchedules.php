@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * WorkSchedules
  *
  * @ORM\Table(name="work_schedules", indexes={@ORM\Index(name="IDX_533374DB87F4FB17", columns={"doctor_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\WorkScheduleRepository")
  */
 class WorkSchedules
 {

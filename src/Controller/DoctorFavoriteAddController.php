@@ -9,6 +9,7 @@ use App\Response\ErrorResponse;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Exception;
 
@@ -32,11 +33,11 @@ class DoctorFavoriteAddController extends BaseController
         $doctor_id = intval($request->get('id'));
         $doctor = $this->doctorRepository->find($doctor_id);
         if ($doctor == null) {
-            return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', 404));
+            return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', Response::HTTP_NOT_FOUND));
         }
         $fav = $this->ufdRepository->findOneBy(['patient' => $user->getId(), 'doctor' => $doctor_id]);
         if ($fav != null) {
-            return new JsonResponse([], 204);
+            return new JsonResponse([], Response::HTTP_NO_CONTENT);
         }
         $ufd = new UserFavDoctors();
         $ufd->setPatient($user);
@@ -45,6 +46,6 @@ class DoctorFavoriteAddController extends BaseController
         $entityManager->persist($ufd);
         $entityManager->flush();
 
-        return new JsonResponse([], 204);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

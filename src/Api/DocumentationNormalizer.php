@@ -31,7 +31,8 @@ final class DocumentationNormalizer implements NormalizerInterface
         $paths = [
             '/login' => [201, 422],
             '/doctor/{id}/favorite' => [201, 400, 422],
-            '/doctor/{id}/appointment/{appointment_id}' => [200, 400, 422]
+            '/doctor/{id}/appointment/{appointment_id}' => [200, 400, 422],
+            '/profile' => [200],
         ];
 
         foreach ($paths as $path => $statusCodes) {

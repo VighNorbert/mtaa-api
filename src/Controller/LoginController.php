@@ -35,13 +35,13 @@ class LoginController extends BaseController
             $email = (string) $content->email;
             $password = (string) $content->password;
         } catch (Exception) {
-            return new Response('', 400);
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
         }
 
         $user = $this->userRepository->findOneBy(['email' => $email, 'passwordHash' => $password]);
 
         if (!$user) {
-            return new ErrorResponse(new Exception('Nesprávne prihlasovacie údaje', 422));
+            return new ErrorResponse(new Exception('Nesprávne prihlasovacie údaje', Response::HTTP_UNPROCESSABLE_ENTITY));
         }
 
         $token = new AccessTokens();

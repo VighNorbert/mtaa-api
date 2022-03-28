@@ -8,6 +8,7 @@ use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class AppointmentRepository extends ServiceEntityRepository
 {
@@ -54,7 +55,7 @@ class AppointmentRepository extends ServiceEntityRepository
         if ($result == null)
             return null;
         if ($result['doctor_id'] != $doc_id && $result['patient_id'] != $user->getId())
-            throw new Exception('Nedostatočné práva', 403);
+            throw new Exception('Nedostatočné práva', Response::HTTP_FORBIDDEN);
         return $result;
     }
 }

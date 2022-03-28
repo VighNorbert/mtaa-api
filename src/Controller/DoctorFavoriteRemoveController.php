@@ -7,6 +7,7 @@ use App\Response\ErrorResponse;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Exception;
 
@@ -29,12 +30,12 @@ class DoctorFavoriteRemoveController extends BaseController
         $ufd = $this->ufdRepository->findOneBy(['patient' => $user_id, 'doctor' => $doctor_id]);
 
         if ($ufd == null) {
-            return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', 404));
+            return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', Response::HTTP_NOT_FOUND));
         }
 
         $entityManager->remove($ufd);
         $entityManager->flush();
 
-        return new JsonResponse([], 204);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

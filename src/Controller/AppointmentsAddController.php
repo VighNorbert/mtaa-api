@@ -29,10 +29,10 @@ class AppointmentsAddController extends BaseController
         $appointment = $this->appointmentRepository->findOneBy(['doctor' => intval($request->get('id')),
                                                         'id' => intval($request->get('appointment_id'))]);
         if ($appointment == null) {
-            return new ErrorResponse(new Exception('Lekára alebo termín vyšetrenia sa nepodarilo nájsť', 404));
+            return new ErrorResponse(new Exception('Lekára alebo termín vyšetrenia sa nepodarilo nájsť', Response::HTTP_NOT_FOUND));
         }
         if ($appointment->getPatient() != null) {
-            return new ErrorResponse(new Exception('Termín je už obsadený', 409));
+            return new ErrorResponse(new Exception('Termín je už obsadený', Response::HTTP_CONFLICT));
         }
         try {
             $content = $request->getContent();
@@ -42,7 +42,7 @@ class AppointmentsAddController extends BaseController
             }
             $appointment->setDescription($content->description);
         } catch (Exception) {
-            return new Response('', 400);
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
         }
         $appointment->setUpdatedAt(new DateTime());
         $appointment->setPatient($user);
@@ -50,6 +50,6 @@ class AppointmentsAddController extends BaseController
 
         $entityManager->persist($appointment);
         $entityManager->flush();
-        return new JsonResponse([], 204);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

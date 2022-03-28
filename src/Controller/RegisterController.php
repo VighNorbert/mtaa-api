@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
@@ -56,7 +57,7 @@ class RegisterController extends BaseController
         $user = $this->userRepository->findOneBy(['email' => $parameters['email']]);
 
         if ($user) {
-            return new ErrorResponse(new Exception('Používateľ s daným emailom už existuje', 422));
+            return new ErrorResponse(new Exception('Používateľ s daným emailom už existuje', Response::HTTP_UNPROCESSABLE_ENTITY));
         }
 
         $user = new Users();
@@ -69,6 +70,6 @@ class RegisterController extends BaseController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return new JsonResponse(['id' => $user->getId()], 201);
+        return new JsonResponse(['id' => $user->getId()], Response::HTTP_CREATED);
     }
 }

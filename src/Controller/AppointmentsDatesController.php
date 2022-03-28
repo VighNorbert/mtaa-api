@@ -61,7 +61,7 @@ class AppointmentsDatesController extends BaseController
         $nextMonth->add(new \DateInterval('P29D'));
         $generatedDates = $this->appointmentRepository->getGeneratedDates($id, $tomorrow, $nextMonth);
 
-        $day=$tomorrow;
+        $day = $tomorrow;
 
         $al = $doctor->getAppointmentsLength();
 

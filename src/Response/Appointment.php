@@ -23,7 +23,7 @@ class Appointment
 
     public User $patient;
 
-    public function __construct(Appointments $appointments, DoctorBase $doctor, User $patient)
+    public function __construct(Appointments $appointments, DoctorBase $doctor, ?User $patient)
     {
         $this->id = $appointments->getId();
         $this->time_from = $appointments->getTimeFrom();

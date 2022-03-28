@@ -96,4 +96,16 @@ class AppointmentRepository extends ServiceEntityRepository
 
         return $fd;
     }
+
+    public function getTimes(int $id, string $date) {
+        $sql = "SELECT id, time_from::time, time_to::time, date
+                FROM appointments
+                WHERE doctor_id = :did AND date = :date";
+        $queryParams = [
+            "did" => $id,
+            "date" => $date
+        ];
+        $statement = $this->_em->getConnection()->executeQuery($sql, $queryParams);
+        return $statement->fetchAllAssociative();
+    }
 }

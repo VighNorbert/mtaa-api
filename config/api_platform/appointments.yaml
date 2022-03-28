@@ -339,7 +339,7 @@ resources:
       delete:
         method: delete
         path: /doctor/{id}/appointment/{appointment_id}
-        controller: App\Controller\AppointmentRemoveController
+        controller: App\Controller\AppointmentsRemoveController
         openapi_context:
           summary: Zrušenie vyšetrenia
           description: |

@@ -181,7 +181,9 @@ resources:
               required: true
           requestBody:
             content:
-              application/json: {}
+              application/json:
+                schema:
+                  type: object
           responses:
             '204':
               description: Lekár bol pridaný

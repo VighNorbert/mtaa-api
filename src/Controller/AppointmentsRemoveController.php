@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class AppointmentRemoveController extends BaseController
+class AppointmentsRemoveController extends BaseController
 {
     private AppointmentRepository $appointmentRepository;
     private DoctorRepository $doctorRepository;

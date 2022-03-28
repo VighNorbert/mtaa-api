@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\UserFavDoctorRepository;
 use App\Response\ErrorResponse;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,8 @@ class DoctorFavoriteRemoveController extends BaseController
             return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', Response::HTTP_NOT_FOUND));
         }
 
-        $entityManager->remove($ufd);
+        $ufd->setUpdatedAt(new DateTime());
+        $ufd->setDeletedAt(new DateTime());
         $entityManager->flush();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);

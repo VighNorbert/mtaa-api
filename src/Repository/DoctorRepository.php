@@ -42,7 +42,7 @@ class DoctorRepository extends ServiceEntityRepository
     public function findFavorite(Users $user, int $id): array {
         $sql = "SELECT (ufd.patient_id is not null) AS is_favorite
                 FROM user_fav_doctors ufd
-                WHERE ufd.patient_id=:p AND ufd.doctor_id=:id";
+                WHERE ufd.patient_id=:p AND ufd.doctor_id=:id AND ufd.deleted_at is null";
         $queryParams = [
             "p" => $user->getId(),
             "id" => $id
@@ -54,7 +54,7 @@ class DoctorRepository extends ServiceEntityRepository
     public function filterSchedules(int $id) {
         $sql = "SELECT weekday, time_from, time_to
                 FROM work_schedules w 
-                WHERE doctor_id=:id";
+                WHERE doctor_id=:id AND ((current_timestamp between w.created_at AND w.deleted_at) OR (w.deleted_at is null AND w.created_at < current_timestamp))";
         $queryParams = [
             "id" => $id
         ];

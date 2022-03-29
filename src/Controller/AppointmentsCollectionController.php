@@ -31,7 +31,7 @@ class AppointmentsCollectionController extends BaseController
     {
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
         $user = $this->getUser();
-        $doctor = $this->doctorRepository->find($user->getId());
+        $doctor = $this->doctorRepository->findOneBy(['user' => $user->getId()]);
         $date = $request->query->get('date');
         $appointmentsCollection = $this->appointmentRepository->getMyAppointments($user, $doctor, $date);
         $result = [];

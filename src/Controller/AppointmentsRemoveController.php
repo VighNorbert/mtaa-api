@@ -31,7 +31,7 @@ class AppointmentsRemoveController extends BaseController
         $entityManager = $doctrine->getManager();
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
         $user = $this->getUser();
-        $doctor = $this->doctorRepository->find($user->getId());
+        $doctor = $this->doctorRepository->findOneBy(['user' => $user->getId()]);
         try {
             $app = $this->appointmentRepository->getMyAppointment($appointment_id, $user, $doctor);
             if ($app == null) {

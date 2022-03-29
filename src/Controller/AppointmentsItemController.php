@@ -32,7 +32,7 @@ class AppointmentsItemController extends BaseController
     {
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
         $user = $this->getUser();
-        $doctor = $this->doctorRepository->find($user->getId());
+        $doctor = $this->doctorRepository->findOneBy(['user' => $user->getId()]);
         try {
             $app = $this->appointmentRepository->getMyAppointment($id, $user, $doctor);
         } catch (Exception $e) {

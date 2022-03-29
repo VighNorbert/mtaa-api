@@ -41,7 +41,7 @@ class LoginController extends BaseController
         $user = $this->userRepository->findOneBy(['email' => $email, 'passwordHash' => $password]);
 
         if (!$user) {
-            return new ErrorResponse(new Exception('Nesprávne prihlasovacie údaje', Response::HTTP_UNPROCESSABLE_ENTITY));
+            return new ErrorResponse(new Exception('Nesprávne prihlasovacie údaje', Response::HTTP_UNAUTHORIZED));
         }
 
         $token = new AccessTokens();

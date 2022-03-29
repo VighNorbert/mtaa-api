@@ -33,7 +33,7 @@ class LoginController extends BaseController
             if (!isset($content->email) || !isset($content->password))
                 throw new Exception();
             $email = (string) $content->email;
-            $password = (string) $content->password;
+            $password = hash('sha256', (string) $content->password);
         } catch (Exception) {
             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
         }

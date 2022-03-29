@@ -39,7 +39,7 @@ class RegisterDoctorController extends BaseController
             $content = $request->getContent();
             $content = json_decode($content, flags: JSON_THROW_ON_ERROR);
 
-            if (!isset($content->name) || !isset($content->surname) || !isset($content->email) || !isset($content->phone) || !isset($content->password_hash)
+            if (!isset($content->name) || !isset($content->surname) || !isset($content->email) || !isset($content->phone) || !isset($content->password)
              || !isset($content->title) || !isset($content->specialisation_id) || !isset($content->appointments_length) || !isset($content->address) || !isset($content->city)
              || !isset($content->description) || !isset($content->schedules)
              || (isset($content->avatar) && (!isset($content->avatar->file) || !isset($content->avatar->filename) || !isset($content->avatar->extension)))
@@ -53,7 +53,7 @@ class RegisterDoctorController extends BaseController
                     'title' => (string) $content->title,
                     'email' => (string) $content->email,
                     'phone' => (string) $content->phone,
-                    'password' => (string) $content->password_hash,
+                    'password' => (string) $content->password,
                     'specialisation_id' => (int) $content->specialisation_id,
                     'appointments_length' => (int) $content->appointments_length,
                     'address' => (string) $content->address,
@@ -67,7 +67,7 @@ class RegisterDoctorController extends BaseController
                     'title' => new ValidationSchema(max: 8),
                     'email' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_EMAIL, max: 256),
                     'phone' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_PHONE, min: 10, max: 16),
-                    'password' => new ValidationSchema(min: 64, max: 64),
+                    'password' => new ValidationSchema(min: 8),
                     'specialisation_id' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_NUMBER_GTZ),
                     'appointments_length' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_NUMBER_GTZ),
                     'address' => new ValidationSchema(max: 128),
@@ -122,7 +122,7 @@ class RegisterDoctorController extends BaseController
              ->setSurname($parameters['surname'])
              ->setEmail($parameters['email'])
              ->setPhone($parameters['phone'])
-             ->setPasswordHash($parameters['password']);
+             ->setPasswordHash(hash('sha256', $parameters['password']));
 
         $entityManager->persist($user);
         $entityManager->flush();

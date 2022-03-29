@@ -152,7 +152,7 @@ resources:
                     - name
                     - surname
                     - email
-                    - password_hash
+                    - password
                   properties:
                     name:
                       type: string
@@ -172,11 +172,10 @@ resources:
                       example: +421 901 234 567
                       minLength: 10
                       maxLength: 16
-                    password_hash:
+                    password:
                       type: string
-                      example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
-                      minLength: 64
-                      maxLength: 64
+                      example: ba7816bf8f01c
+                      minLength: 8
           responses:
             '201':
               description: Pacient bol vytvorený
@@ -217,7 +216,7 @@ resources:
                     - city
                     - description
                     - schedules
-                    - password_hash
+                    - password
                   properties:
                     name:
                       type: string
@@ -299,11 +298,10 @@ resources:
                         extension:
                           type: string
                           example: jpeg
-                    password_hash:
+                    password:
                       type: string
-                      example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
-                      minLength: 64
-                      maxLength: 64
+                      example: ba7816bf8f01c
+                      minLength: 8
           responses:
             '201':
               description: Lekár bol vytvorený
@@ -343,7 +341,7 @@ resources:
                     - address
                     - city
                     - description
-                    - password_hash
+                    - password
                   properties:
                     name:
                       type: string
@@ -425,11 +423,10 @@ resources:
                         extension:
                           type: string
                           example: jpeg
-                    password_hash:
+                    password:
                       type: string
-                      example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
-                      minLength: 64
-                      maxLength: 64
+                      example: ba7816bf8f01c
+                      minLength: 8
           responses:
             '204':
               description: Zmeny boli uložené

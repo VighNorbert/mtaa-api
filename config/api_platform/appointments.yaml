@@ -311,18 +311,15 @@ resources:
                   type: object
                   required:
                     - description
+                    - appointment_type
                   properties:
                     description:
                       type: string
                       example: bolesť hrdla
                       maxLength: 64
                     appointment_type:
-                      schema:
-                        type: string
-                        enum:
-                          - O
-                          - F
-                      required: true
+                      type: string
+                      example: O
           responses:
             '204':
               description: Termín bol zarezervovaný

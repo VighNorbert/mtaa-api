@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\UserFavDoctors;
+use App\Repository\DoctorRepository;
 use App\Repository\UserFavDoctorRepository;
 use App\Response\ErrorResponse;
-use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,12 +14,14 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Exception;
 
 #[AsController]
-class DoctorFavoriteRemoveController extends BaseController
+class DoctorFavouriteAddController extends BaseController
 {
+    private DoctorRepository $doctorRepository;
     private UserFavDoctorRepository $ufdRepository;
 
-    public function __construct(UserFavDoctorRepository $ufdRepository)
+    public function __construct(DoctorRepository $doctorRepository, UserFavDoctorRepository $ufdRepository)
     {
+        $this->doctorRepository = $doctorRepository;
         $this->ufdRepository = $ufdRepository;
     }
 
@@ -26,16 +29,21 @@ class DoctorFavoriteRemoveController extends BaseController
     {
         $entityManager = $doctrine->getManager();
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
-        $user_id = $this->getUser()->getId();
+        $user = $this->getUser();
         $doctor_id = intval($request->get('id'));
-        $ufd = $this->ufdRepository->findOneBy(['patient' => $user_id, 'doctor' => $doctor_id]);
-
-        if ($ufd == null) {
+        $doctor = $this->doctorRepository->find($doctor_id);
+        if ($doctor == null) {
             return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', Response::HTTP_NOT_FOUND));
         }
+        $fav = $this->ufdRepository->findOneBy(['patient' => $user->getId(), 'doctor' => $doctor_id, 'deletedAt' => null]);
+        if ($fav != null) {
+            return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        }
+        $ufd = new UserFavDoctors();
+        $ufd->setPatient($user);
+        $ufd->setDoctor($doctor);
 
-        $ufd->setUpdatedAt(new DateTime());
-        $ufd->setDeletedAt(new DateTime());
+        $entityManager->persist($ufd);
         $entityManager->flush();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);

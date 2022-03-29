@@ -282,7 +282,7 @@ resources:
               description: Chýbajúca autentifikácia
             '403':
               description: Nedostatočné práva
-      post:
+      put:
         method: put
         path: /doctor/{id}/appointment/{appointment_id}
         controller: App\Controller\AppointmentsAddController
@@ -304,15 +304,6 @@ resources:
               schema:
                 type: integer
               required: true
-            - in: query
-              name: type
-              description: Druh vyšetrenia (Online / Fyzicky)
-              schema:
-                type: string
-                enum:
-                  - O
-                  - F
-              required: true
           requestBody:
             content:
               application/json:
@@ -325,6 +316,13 @@ resources:
                       type: string
                       example: bolesť hrdla
                       maxLength: 64
+                    appointment_type:
+                      schema:
+                        type: string
+                        enum:
+                          - O
+                          - F
+                      required: true
           responses:
             '204':
               description: Termín bol zarezervovaný

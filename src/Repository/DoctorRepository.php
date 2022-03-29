@@ -16,7 +16,7 @@ class DoctorRepository extends ServiceEntityRepository
 
     public function filterAll(array $params, Users $user): array
     {
-        $sql = "SELECT d.id,d.specialisation_id,(ufd.patient_id is not null) AS is_favorite, u.id AS user_id
+        $sql = "SELECT d.id,d.specialisation_id,(ufd.patient_id is not null) AS is_favourite, u.id AS user_id
                 FROM doctors d
                 JOIN users u ON d.user_id=u.id
                 LEFT JOIN user_fav_doctors ufd ON d.id = ufd.doctor_id AND ufd.deleted_at is null AND ufd.patient_id=:p
@@ -24,7 +24,7 @@ class DoctorRepository extends ServiceEntityRepository
                 ".(($params['name'] != null) ? "AND (u.name ILIKE :n OR u.surname ILIKE :n)" : "")
                  .(($params['specialisation'] != null) ? "AND (specialisation_id=:s)" : "")
                  .(($params['city'] != null) ? "AND (d.city ILIKE :c)" : "")
-                 .(($params['only_favorites']) ? "AND (ufd.patient_id is not null)" : "").
+                 .(($params['only_favourites']) ? "AND (ufd.patient_id is not null)" : "").
                 "LIMIT :l 
                 OFFSET :o";
         $queryParams = [
@@ -39,8 +39,8 @@ class DoctorRepository extends ServiceEntityRepository
         return $statement->fetchAllAssociative();
     }
 
-    public function findFavorite(Users $user, int $id): array {
-        $sql = "SELECT (ufd.patient_id is not null) AS is_favorite
+    public function findFavourite(Users $user, int $id): array {
+        $sql = "SELECT (ufd.patient_id is not null) AS is_favourite
                 FROM user_fav_doctors ufd
                 WHERE ufd.patient_id=:p AND ufd.doctor_id=:id AND ufd.deleted_at is null";
         $queryParams = [

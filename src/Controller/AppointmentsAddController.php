@@ -37,16 +37,16 @@ class AppointmentsAddController extends BaseController
         try {
             $content = $request->getContent();
             $content = json_decode($content, flags: JSON_THROW_ON_ERROR);
-            if (!isset ($content->description)) {
+            if (!isset ($content->description) || !isset ($content->appointment_type) || !in_array($content->appointment_type, ['O', 'F'])) {
                 throw new Exception();
             }
-            $appointment->setDescription($content->description);
         } catch (Exception) {
             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
         }
         $appointment->setUpdatedAt(new DateTime());
         $appointment->setPatient($user);
-        $appointment->setType($request->get('type'));
+        $appointment->setDescription($content->description);
+        $appointment->setType($content->appointment_type);
 
         $entityManager->persist($appointment);
         $entityManager->flush();

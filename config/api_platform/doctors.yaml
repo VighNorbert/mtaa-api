@@ -107,7 +107,7 @@ resources:
                               type: string
                               format: time
                               example: '13:00'
-                      is_favorite:
+                      is_favourite:
                         type: boolean
                         default: false
             '404':
@@ -137,10 +137,10 @@ resources:
                     format: binary
             '404':
               description: Lekára sa nepodarilo nájsť
-      removeFavorite:
+      removeFavourite:
         method: delete
-        path: /doctor/{id}/favorite
-        controller: App\Controller\DoctorFavoriteRemoveController
+        path: /doctor/{id}/favourite
+        controller: App\Controller\DoctorFavouriteRemoveController
         openapi_context:
           summary: Odstránenie lekára z obľúbených
           description: |
@@ -163,10 +163,10 @@ resources:
             '404':
               description: Lekára sa nepodarilo nájsť
     collectionOperations:
-      addFavorite:
+      addFavourite:
         method: post
-        path: /doctor/{id}/favorite
-        controller: App\Controller\DoctorFavoriteAddController
+        path: /doctor/{id}/favourite
+        controller: App\Controller\DoctorFavouriteAddController
         openapi_context:
           summary: Pridanie lekára ako obľúbeného
           description: |
@@ -224,7 +224,7 @@ resources:
                 type: string
               required: false
             - in: query
-              name: only_favorites
+              name: only_favourites
               description: Zobraziť iba obľúbených lekárov
               schema:
                 type: boolean
@@ -313,6 +313,6 @@ resources:
                           example: >-
                             Pôsobí ako všeobecný zubný lekár pre deti aj dospelých. Vykonáva aj 
                             endodontické vyšetrenia.
-                        is_favorite:
+                        is_favourite:
                           type: boolean
                           default: false

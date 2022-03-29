@@ -6,7 +6,7 @@ use App\Repository\DoctorRepository;
 use App\Repository\SpecialisationRepository;
 use App\Repository\UserRepository;
 use App\Response\DoctorDetail;
-use App\Response\DoctorFavorite;
+use App\Response\DoctorFavourite;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,11 +28,11 @@ class DoctorsItemController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
         $id = intval($request->get('id'));
         $user = $this->getUser();
-        $favorite = $this->doctorRepository->findFavorite($user, $id);
-        $favorite = !(sizeof($favorite) == 0);
+        $favourite = $this->doctorRepository->findFavourite($user, $id);
+        $favourite = !(sizeof($favourite) == 0);
         $doctor = $this->doctorRepository->find($id);
         $schedules = $this->doctorRepository->filterSchedules($id);
-        $result = new DoctorDetail($doctor, $favorite, $schedules);
+        $result = new DoctorDetail($doctor, $favourite, $schedules);
         return new JsonResponse($result);
     }
 }

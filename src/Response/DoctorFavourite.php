@@ -4,7 +4,7 @@ namespace App\Response;
 
 use App\Entity\Doctors;
 
-class DoctorFavorite extends DoctorBase
+class DoctorFavourite extends DoctorBase
 {
     public bool $is_favourite;
 

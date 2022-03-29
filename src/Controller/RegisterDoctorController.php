@@ -12,6 +12,7 @@ use App\Response\ErrorResponse;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +39,11 @@ class RegisterDoctorController extends BaseController
             $content = $request->getContent();
             $content = json_decode($content, flags: JSON_THROW_ON_ERROR);
 
-            if (!isset($content->name) || !isset($content->surname) || !isset($content->email) || !isset($content->phone) || !isset($content->password_hash))
+            if (!isset($content->name) || !isset($content->surname) || !isset($content->email) || !isset($content->phone) || !isset($content->password_hash)
+             || !isset($content->title) || !isset($content->specialisation_id) || !isset($content->appointments_length) || !isset($content->address) || !isset($content->city)
+             || !isset($content->description) || !isset($content->schedules)
+             || (isset($content->avatar) && (!isset($content->avatar->file) || !isset($content->avatar->filename) || !isset($content->avatar->extension)))
+            )
                 throw new Exception('Chýbajúci povinný parameter.');
 
             $parameters = $this->parametersValidation(
@@ -134,32 +139,34 @@ class RegisterDoctorController extends BaseController
         try {
             if (isset($content->avatar)) {
                 $avatar = $content->avatar;
-                $avatar = [
-                    'file' => (string) $avatar->file,
-                    'filename' => (string) $avatar->filename,
-                    'extension' => strtolower($avatar->extension),
-                ];
+                if (isset($avatar->file) && isset($avatar->filename) && isset($avatar->extension)) {
+                    $avatar = [
+                        'file' => (string)$avatar->file,
+                        'filename' => (string)$avatar->filename,
+                        'extension' => strtolower($avatar->extension),
+                    ];
 
-                // check if directory exists
-                if (!file_exists('img/')) mkdir('img');
-                if (!file_exists('img/avatars/')) mkdir('img/avatars');
+                    // check if directory exists
+                    if (!file_exists('img/')) mkdir('img');
+                    if (!file_exists('img/avatars/')) mkdir('img/avatars');
 
-                // find available filename
-                $i = 0;
-                $path = 'img/avatars/' . $avatar['filename'] . '.' . $avatar['extension'];
-                $filename = $avatar['filename'] . '.' . $avatar['extension'];
-                while(file_exists($path)) {
-                    $path = 'img/avatars/' . $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
-                    $filename = $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
-                    $i++;
+                    // find available filename
+                    $i = 0;
+                    $path = 'img/avatars/' . $avatar['filename'] . '.' . $avatar['extension'];
+                    $filename = $avatar['filename'] . '.' . $avatar['extension'];
+                    while (file_exists($path)) {
+                        $path = 'img/avatars/' . $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
+                        $filename = $i . "_" . $avatar['filename'] . '.' . $avatar['extension'];
+                        $i++;
+                    }
+
+                    // save image
+                    $f = fopen($path, "wb");
+                    fwrite($f, base64_decode($avatar['file']));
+                    fclose($f);
+
+                    $doctor->setAvatarFilename($filename);
                 }
-
-                // save image
-                $f = fopen($path, "wb");
-                fwrite($f, base64_decode($avatar['file']));
-                fclose($f);
-
-                $doctor->setAvatarFilename($filename);
             }
         } catch (Exception $e) {
             return new ErrorResponse($e);
@@ -182,6 +189,6 @@ class RegisterDoctorController extends BaseController
 
         $entityManager->flush();
 
-        return new JsonResponse(['id' => $user->getId()], Response::HTTP_CREATED);
+        return new JsonResponse(['id' => $doctor->getId()], Response::HTTP_CREATED);
     }
 }

@@ -282,8 +282,8 @@ resources:
               description: Chýbajúca autentifikácia
             '403':
               description: Nedostatočné práva
-      put:
-        method: put
+      post:
+        method: post
         path: /doctor/{id}/appointment/{appointment_id}
         controller: App\Controller\AppointmentsAddController
         openapi_context:

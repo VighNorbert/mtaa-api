@@ -193,6 +193,8 @@ resources:
               description: Nedostatočné práva
             '404':
               description: Lekára sa nepodarilo nájsť
+            '409':
+              description: Lekár sa už nachádza medzi obľúbenými
       get:
         method: get
         path: /doctors

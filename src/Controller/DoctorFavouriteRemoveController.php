@@ -28,7 +28,7 @@ class DoctorFavouriteRemoveController extends BaseController
         $this->denyAccessUnlessGranted('ROLE_PATIENT');
         $user_id = $this->getUser()->getId();
         $doctor_id = intval($request->get('id'));
-        $ufd = $this->ufdRepository->findOneBy(['patient' => $user_id, 'doctor' => $doctor_id]);
+        $ufd = $this->ufdRepository->findOneBy(['patient' => $user_id, 'doctor' => $doctor_id, 'deletedAt' => null]);
 
         if ($ufd == null) {
             return new ErrorResponse(new Exception('Lekára sa nepodarilo nájsť', Response::HTTP_NOT_FOUND));

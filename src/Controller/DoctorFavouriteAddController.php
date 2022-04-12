@@ -37,7 +37,7 @@ class DoctorFavouriteAddController extends BaseController
         }
         $fav = $this->ufdRepository->findOneBy(['patient' => $user->getId(), 'doctor' => $doctor_id, 'deletedAt' => null]);
         if ($fav != null) {
-            return new JsonResponse([], Response::HTTP_NO_CONTENT);
+            return new JsonResponse([], Response::HTTP_CONFLICT);
         }
         $ufd = new UserFavDoctors();
         $ufd->setPatient($user);

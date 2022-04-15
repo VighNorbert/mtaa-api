@@ -42,7 +42,7 @@ class ProfileController extends BaseController
             $content = $request->getContent();
             $content = json_decode($content, flags: JSON_THROW_ON_ERROR);
 
-            if (!isset($content->name) || !isset($content->surname) || !isset($content->email) || !isset($content->phone) || !isset($content->password))
+            if (!isset($content->name) || !isset($content->surname) || !isset($content->email) || !isset($content->phone))
                 throw new Exception('Chýbajúci povinný parameter.');
 
             $parameters = $this->parametersValidation(
@@ -52,7 +52,6 @@ class ProfileController extends BaseController
                     'title' => (string) $content->title,
                     'email' => (string) $content->email,
                     'phone' => (string) $content->phone,
-                    'password' => (string) $content->password,
                     'specialisation_id' => (int) $content->specialisation_id,
                     'appointments_length' => (int) $content->appointments_length,
                     'address' => (string) $content->address,
@@ -65,7 +64,6 @@ class ProfileController extends BaseController
                     'title' => new ValidationSchema(max: 8),
                     'email' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_EMAIL, max: 256),
                     'phone' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_PHONE, min: 10, max: 16),
-                    'password' => new ValidationSchema(min: 8),
                     'specialisation_id' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_NUMBER_GTZ),
                     'appointments_length' => new ValidationSchema(allowed_values: ValidationSchema::VALIDATE_NUMBER_GTZ),
                     'address' => new ValidationSchema(max: 128),
@@ -73,6 +71,12 @@ class ProfileController extends BaseController
                     'description' => new ValidationSchema(max: 128),
                 ]
             );
+            if (isset($content->password)) {
+                $this->parametersValidation(
+                    ['password' => (string) $content->password],
+                    ['password' => new ValidationSchema(min: 8)]
+                );
+            }
             if (isset($content->schedules)) {
                 foreach ($content->schedules as $key => $schedule) {
                     $content->schedules[$key] = $this->parametersValidation(
@@ -124,8 +128,11 @@ class ProfileController extends BaseController
              ->setSurname($parameters['surname'])
              ->setEmail($parameters['email'])
              ->setPhone($parameters['phone'])
-             ->setPasswordHash(hash('sha256', $parameters['password']))
              ->setUpdatedAt(new DateTime());
+
+        if (isset($content->password)) {
+            $user->setPasswordHash(hash('sha256', (string) $content->password));
+        }
 
         $doctor = $user->getDoctor();
         $doctor->setSpecialisation($specialisation)

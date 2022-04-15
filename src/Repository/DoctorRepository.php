@@ -21,11 +21,12 @@ class DoctorRepository extends ServiceEntityRepository
                 JOIN users u ON d.user_id=u.id
                 LEFT JOIN user_fav_doctors ufd ON d.id = ufd.doctor_id AND ufd.deleted_at is null AND ufd.patient_id=:p
                 WHERE 1=1
-                ".(($params['name'] != null) ? "AND (u.name ILIKE :n OR u.surname ILIKE :n)" : "")
-                 .(($params['specialisation'] != null) ? "AND (specialisation_id=:s)" : "")
-                 .(($params['city'] != null) ? "AND (d.city ILIKE :c)" : "")
-                 .(($params['only_favourites']) ? "AND (ufd.patient_id is not null)" : "").
-                "LIMIT :l 
+                ".(($params['name'] != null) ? " AND (u.name ILIKE :n OR u.surname ILIKE :n)" : "")
+                 .(($params['specialisation'] != null) ? " AND (specialisation_id=:s)" : "")
+                 .(($params['city'] != null) ? " AND (d.city ILIKE :c)" : "")
+                 .(($params['only_favourites']) ? " AND (ufd.patient_id is not null)" : "").
+                " ORDER BY u.surname asc
+                LIMIT :l 
                 OFFSET :o";
         $queryParams = [
             "n" => "%" . $params['name'] . "%",

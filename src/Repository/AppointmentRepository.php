@@ -26,7 +26,7 @@ class AppointmentRepository extends ServiceEntityRepository
                 FROM appointments
                 WHERE 1=1
                 " .(($date != null) ? "AND (date=:d)" : "")
-                  .(($doctor != null) ? "AND (doctor_id=:did)" : "AND (patient_id=:pid)");
+                  .(($doctor != null) ? "AND (doctor_id=:did) and patient_id is not null" : "AND (patient_id=:pid)");
         $params = [
             "d" => $date,
             "did" => $doc_id,

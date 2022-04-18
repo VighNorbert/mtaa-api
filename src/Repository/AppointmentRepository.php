@@ -100,7 +100,7 @@ class AppointmentRepository extends ServiceEntityRepository
     public function getTimes(int $id, string $date) {
         $sql = "SELECT id, time_from::time, time_to::time, date
                 FROM appointments
-                WHERE doctor_id = :did AND date = :date";
+                WHERE doctor_id = :did AND date = :date AND patient_id is null";
         $queryParams = [
             "did" => $id,
             "date" => $date

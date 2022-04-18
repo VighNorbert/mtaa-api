@@ -6,6 +6,7 @@
     "require": {
         "php": ">=8.0.2",
         "ext-ctype": "*",
+        "ext-fileinfo": "*",
         "ext-iconv": "*",
         "api-platform/core": "^2.6",
         "doctrine/annotations": "^1.0",
@@ -32,10 +33,7 @@
         "symfony/serializer": "6.0.*",
         "symfony/twig-bundle": "6.0.*",
         "symfony/validator": "6.0.*",
-        "symfony/yaml": "6.0.*",
-        "ext-fileinfo": "*"
-    },
-    "require-dev": {
+        "symfony/yaml": "6.0.*"
     },
     "config": {
         "allow-plugins": {

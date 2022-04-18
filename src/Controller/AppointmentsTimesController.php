@@ -36,7 +36,6 @@ class AppointmentsTimesController extends BaseController
         $date->setDate($request->get('year'), $request->get('month'), $request->get('day'));
         $date = $date->format('Y-m-d');
         $appointments = $this->appointmentRepository->getTimes($id, $date);
-        $this->appointmentRepository->getTimes($id, $date);
         return new JsonResponse($appointments);
     }
 }

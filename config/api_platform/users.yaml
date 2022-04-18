@@ -341,7 +341,6 @@ resources:
                     - address
                     - city
                     - description
-                    - password
                   properties:
                     name:
                       type: string

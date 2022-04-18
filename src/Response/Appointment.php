@@ -17,13 +17,13 @@ class Appointment
 
     public string $type;
 
-    public string $description;
+    public string|null $description;
 
     public DoctorBase $doctor;
 
-    public User $patient;
+    public User|null $patient;
 
-    public function __construct(Appointments $appointments, DoctorBase $doctor, User $patient)
+    public function __construct(Appointments $appointments, DoctorBase $doctor, User|null $patient)
     {
         $this->id = $appointments->getId();
         $this->time_from = $appointments->getTimeFrom();

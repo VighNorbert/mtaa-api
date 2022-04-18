@@ -38,7 +38,7 @@ class AppointmentsCollectionController extends BaseController
         foreach ($appointmentsCollection as $app) {
             $appointment = $this->appointmentRepository->find($app['id']);
             $doctor = new DoctorBase($this->doctorRepository->find($app['doctor_id']));
-            $patient = new User($this->userRepository->find($app['patient_id']));
+            $patient = ($app['patient_id']) ? new User($this->userRepository->find($app['patient_id'])) : null;
             $result[] = new Appointment($appointment, $doctor, $patient);
         }
         return new JsonResponse($result);
